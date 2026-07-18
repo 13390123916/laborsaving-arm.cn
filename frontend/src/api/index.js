@@ -40,3 +40,7 @@ export const contactApi = {
   submit: (data) => api.post('/contacts/', data),
   stats: () => api.get('/contacts/stats/')
 }
+
+export const productApi = {
+  list: () => api.get('/products/')
+}

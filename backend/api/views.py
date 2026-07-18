@@ -8,9 +8,10 @@ from rest_framework.response import Response
 from django.utils import timezone
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from .models import Article, Faq, Contact, SiteConfig
+from .models import Article, Faq, Contact, SiteConfig, Product
 from .serializers import (SiteConfigSerializer, ArticleListSerializer,
-                          ArticleDetailSerializer, FaqSerializer, ContactSerializer)
+                          ArticleDetailSerializer, FaqSerializer, ContactSerializer,
+                          ProductSerializer)
 
 
 class SiteConfigViewSet(viewsets.ViewSet):
@@ -135,4 +136,16 @@ class ContactViewSet(viewsets.ViewSet):
                 'handled': handled,
                 'pending': total - handled
             }
+        })
+
+
+class ProductViewSet(viewsets.ViewSet):
+    """产品接口"""
+    def list(self, request):
+        """产品列表（仅返回启用的产品，按排序字段排列）"""
+        queryset = Product.objects.filter(is_active=True)
+        return Response({
+            'code': 200,
+            'message': 'success',
+            'data': ProductSerializer(queryset, many=True).data
         })

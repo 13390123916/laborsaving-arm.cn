@@ -17,4 +17,6 @@ urlpatterns = [
     # 联系表单
     path('contacts/', views.ContactViewSet.as_view({'post': 'create'}), name='contact-create'),
     path('contacts/stats/', views.ContactViewSet.as_view({'get': 'stats'}), name='contact-stats'),
+    # 产品
+    path('products/', views.ProductViewSet.as_view({'get': 'list'}), name='product-list'),
 ]

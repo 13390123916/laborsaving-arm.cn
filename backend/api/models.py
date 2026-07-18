@@ -165,3 +165,28 @@ class Contact(models.Model):
 
     def __str__(self):
         return f'{self.name} - {self.phone}'
+
+
+class Product(models.Model):
+    """产品表 - 企业核心产品/服务，后台可配置
+    替换 Home.vue 硬编码的产品卡片，实现"所有数据后台可配置"
+    """
+    name = models.CharField(max_length=100, verbose_name='产品名称')
+    icon = models.CharField(max_length=10, default='🔧', verbose_name='显示图标')
+    description = models.TextField(verbose_name='产品描述')
+    category = models.CharField(max_length=50, default='核心产品', verbose_name='产品分类')
+    sort_order = models.IntegerField(default=0, verbose_name='排序')
+    is_active = models.BooleanField(default=True, verbose_name='是否显示')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+
+    # 预留扩展字段
+    ext_field1 = models.CharField(max_length=100, blank=True, null=True, verbose_name='扩展字段1')
+
+    class Meta:
+        db_table = 'product'
+        verbose_name = '产品'
+        verbose_name_plural = '产品'
+        ordering = ['sort_order', 'created_at']
+
+    def __str__(self):
+        return self.name

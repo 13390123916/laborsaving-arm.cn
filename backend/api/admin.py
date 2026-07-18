@@ -3,7 +3,7 @@ Django Admin 后台管理配置
 实现数据可视化增删改查，支持 FAQ、资讯、表单等后台管理
 """
 from django.contrib import admin
-from .models import Article, Faq, Contact, SiteConfig
+from .models import Article, Faq, Contact, SiteConfig, Product
 
 
 @admin.register(SiteConfig)
@@ -48,3 +48,12 @@ class ContactAdmin(admin.ModelAdmin):
     search_fields = ['name', 'phone', 'message']
     readonly_fields = ['name', 'phone', 'email', 'message', 'source', 'ip_address', 'created_at']
     list_editable = ['is_handled']
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    """产品管理"""
+    list_display = ['name', 'category', 'sort_order', 'is_active', 'created_at']
+    list_filter = ['category', 'is_active']
+    search_fields = ['name', 'description']
+    list_editable = ['sort_order', 'is_active']

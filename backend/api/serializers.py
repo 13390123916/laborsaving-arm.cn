@@ -2,7 +2,7 @@
 序列化器 - 数据序列化与验证
 """
 from rest_framework import serializers
-from .models import Article, Faq, Contact, SiteConfig
+from .models import Article, Faq, Contact, SiteConfig, Product
 
 
 class SiteConfigSerializer(serializers.ModelSerializer):
@@ -48,3 +48,10 @@ class ContactSerializer(serializers.ModelSerializer):
         if not value or len(value) < 6:
             raise serializers.ValidationError('请输入有效的联系电话')
         return value
+
+
+class ProductSerializer(serializers.ModelSerializer):
+    """产品序列化器"""
+    class Meta:
+        model = Product
+        fields = '__all__'

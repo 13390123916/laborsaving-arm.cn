@@ -16,10 +16,10 @@
     <section class="section container">
       <h2 class="section-title">核心产品</h2>
       <div class="grid grid-3">
-        <div class="card product-card" v-for="p in products" :key="p.title">
+        <div class="card product-card" v-for="p in productList" :key="p.id">
           <div class="product-icon">{{ p.icon }}</div>
-          <h3>{{ p.title }}</h3>
-          <p class="text-light">{{ p.desc }}</p>
+          <h3>{{ p.name }}</h3>
+          <p class="text-light">{{ p.description }}</p>
         </div>
       </div>
     </section>
@@ -63,17 +63,12 @@
 
 <script setup>
 import { ref, onMounted, watch } from 'vue'
-import { siteApi, faqApi } from '@/api'
+import { siteApi, faqApi, productApi } from '@/api'
 import { useJsonLd, buildOrganizationSchema } from '@/composables/useJsonLd'
 
 const config = ref({})
 const faqList = ref([])
-
-const products = [
-  { icon: '🦾', title: '气动助力机械臂', desc: '负载50-800kg，气动平衡技术，操作省力安全' },
-  { icon: '⚖️', title: '平衡吊', desc: '配合机械臂使用，实现工件精准平衡吊装' },
-  { icon: '🔧', title: '定制自动化产线', desc: '按需定制，与现有产线无缝集成' }
-]
+const productList = ref([])
 
 const advantages = [
   { num: '10+', title: '行业经验', desc: '深耕工业助力领域十余年' },
@@ -87,13 +82,13 @@ const { inject: injectOrgSchema } = useJsonLd('schema-organization')
 
 onMounted(async () => {
   try {
-    const [c, f] = await Promise.all([siteApi.getConfig(), faqApi.list()])
+    const [c, f, p] = await Promise.all([siteApi.getConfig(), faqApi.list(), productApi.list()])
     if (c.code === 200) {
       config.value = c.data
-      // 配置加载后立即注入 Organization Schema
       injectOrgSchema(buildOrganizationSchema(c.data))
     }
     if (f.code === 200) faqList.value = f.data.slice(0, 4)
+    if (p.code === 200) productList.value = p.data
   } catch (e) {
     console.error(e)
   }
