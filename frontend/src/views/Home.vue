@@ -62,8 +62,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { siteApi, faqApi } from '@/api'
+import { useJsonLd, buildOrganizationSchema } from '@/composables/useJsonLd'
 
 const config = ref({})
 const faqList = ref([])
@@ -81,10 +82,17 @@ const advantages = [
   { num: '100%', title: '安全设计', desc: '断气保护，工件绝不坠落' }
 ]
 
+// 注入 Organization 结构化数据（对齐后端 /schema/organization.json）
+const { inject: injectOrgSchema } = useJsonLd('schema-organization')
+
 onMounted(async () => {
   try {
     const [c, f] = await Promise.all([siteApi.getConfig(), faqApi.list()])
-    if (c.code === 200) config.value = c.data
+    if (c.code === 200) {
+      config.value = c.data
+      // 配置加载后立即注入 Organization Schema
+      injectOrgSchema(buildOrganizationSchema(c.data))
+    }
     if (f.code === 200) faqList.value = f.data.slice(0, 4)
   } catch (e) {
     console.error(e)

@@ -42,14 +42,18 @@
 import { ref, onMounted, computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { articleApi } from '@/api'
+import { setTDK, getSiteConfig } from '@/plugins/seo'
+import { useJsonLd, buildArticleSchema } from '@/composables/useJsonLd'
 
 const route = useRoute()
 const article = ref(null)
 const relatedList = ref([])
 
+// 注入 Article 结构化数据
+const { inject: injectArticleSchema } = useJsonLd('schema-article')
+
 const formattedContent = computed(() => {
   if (!article.value?.content) return ''
-  // 将换行转为段落
   return article.value.content
     .split('\n')
     .filter(p => p.trim())
@@ -64,9 +68,15 @@ const loadDetail = async (id) => {
     const res = await articleApi.detail(id)
     if (res.code === 200) {
       article.value = res.data
-      // 设置页面 TDK
-      document.title = res.data.seo_title || res.data.title
-      setMetaDesc(res.data.seo_description || res.data.summary)
+      // 动态覆盖 TDK（路由后置守卫先设了泛默认值，此处用文章独立 SEO 字段覆盖）
+      setTDK({
+        title: res.data.seo_title || res.data.title + ' | LABOR-SAVING 气动助力机械臂',
+        keywords: res.data.seo_keywords || '',
+        description: res.data.seo_description || res.data.summary || ''
+      })
+      // 注入 Article Schema
+      const site = getSiteConfig()
+      injectArticleSchema(buildArticleSchema(res.data, site))
     }
   } catch (e) { console.error(e) }
 }
@@ -78,11 +88,6 @@ const loadRelated = async () => {
       relatedList.value = res.data.list.filter(a => a.id !== article.value?.id).slice(0, 4)
     }
   } catch (e) { console.error(e) }
-}
-
-const setMetaDesc = (desc) => {
-  let el = document.querySelector('meta[name="description"]')
-  if (el) el.setAttribute('content', desc)
 }
 
 onMounted(() => {

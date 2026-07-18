@@ -38,17 +38,25 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { faqApi } from '@/api'
+import { useJsonLd, buildFaqPageSchema } from '@/composables/useJsonLd'
 
 const faqList = ref([])
 const categories = ref([])
 const activeCat = ref('')
 const openIndex = ref(0)
 
+// 注入 FAQPage 结构化数据
+const { inject: injectFaqSchema } = useJsonLd('schema-faqpage')
+
 const loadFaqs = async (cat = '') => {
   try {
     const res = await faqApi.list({ category: cat })
     if (res.code === 200) {
       faqList.value = res.data
+      // 注入 FAQPage Schema（仅在全部列表时注入，避免分类筛选后数据不完整）
+      if (!cat) {
+        injectFaqSchema(buildFaqPageSchema(res.data))
+      }
       // 提取分类
       const cats = [...new Set(res.data.map(f => f.category))]
       categories.value = cats

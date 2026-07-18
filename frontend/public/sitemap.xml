@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://laborsaving-arm.cn/</loc><changefreq>weekly</changefreq><priority>1.0</priority></url>
+  <url><loc>https://laborsaving-arm.cn/about</loc><changefreq>monthly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://laborsaving-arm.cn/news</loc><changefreq>weekly</changefreq><priority>0.7</priority></url>
+  <url><loc>https://laborsaving-arm.cn/faq</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
+  <url><loc>https://laborsaving-arm.cn/contact</loc><changefreq>monthly</changefreq><priority>0.7</priority></url>
+  <!-- 注意：此文件为静态快照。生产部署时推荐使用 Django 动态生成的 /sitemap.xml（含全部文章 URL） -->
+</urlset>

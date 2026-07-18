@@ -127,9 +127,64 @@ def schema_json(request):
     return JsonResponse(schema, json_dumps_params={'ensure_ascii': False})
 
 
+def schema_faqs_json(request):
+    """生成 FAQPage Schema 结构化数据（JSON-LD）
+    与前端 FAQ 页注入的 JSON-LD 结构对齐，供搜索引擎/AI 爬虫直接访问
+    """
+    faqs = Faq.objects.filter(is_active=True)[:20]
+    main_entity = []
+    for faq in faqs:
+        answer_text = faq.answer
+        if faq.detail:
+            answer_text += '\n\n' + faq.detail
+        main_entity.append({
+            "@type": "Question",
+            "name": faq.question,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": answer_text
+            }
+        })
+    schema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": main_entity
+    }
+    return JsonResponse(schema, json_dumps_params={'ensure_ascii': False, 'indent': 2})
+
+
+def schema_article_json(request, pk):
+    """生成 Article Schema 结构化数据（JSON-LD）"""
+    try:
+        article = Article.objects.get(id=pk, status=1)
+    except Article.DoesNotExist:
+        return JsonResponse({'error': 'Article not found'}, status=404)
+
+    config = SiteConfig.objects.first()
+    company_name = config.company_name if config else 'LABOR-SAVING 智能装备有限公司'
+
+    schema = {
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": article.title,
+        "description": article.summary or article.seo_description or '',
+        "author": {"@type": "Organization", "name": company_name},
+        "publisher": {"@type": "Organization", "name": company_name},
+        "datePublished": article.created_at.isoformat() if article.created_at else '',
+        "dateModified": article.updated_at.isoformat() if article.updated_at else '',
+        "mainEntityOfPage": {
+            "@type": "WebPage",
+            "@id": f"https://laborsaving-arm.cn/news/{article.id}"
+        }
+    }
+    return JsonResponse(schema, json_dumps_params={'ensure_ascii': False, 'indent': 2})
+
+
 urlpatterns = [
     path('llms.txt', llms_txt, name='llms-txt'),
     path('robots.txt', robots_txt, name='robots-txt'),
     path('sitemap.xml', sitemap_xml, name='sitemap-xml'),
     path('schema/organization.json', schema_json, name='schema-organization'),
+    path('schema/faqs.json', schema_faqs_json, name='schema-faqs'),
+    path('schema/article/<int:pk>.json', schema_article_json, name='schema-article'),
 ]

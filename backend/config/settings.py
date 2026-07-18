@@ -4,9 +4,12 @@ LABOR-SAVING 气动助力机械臂企业官网 - 后端配置
 技术栈：Django + SQLite + Django REST Framework
 """
 from pathlib import Path
+import os
 
-# 项目根目录
+# 项目根目录（backend/）
 BASE_DIR = Path(__file__).resolve().parent.parent
+# 项目仓库根目录（含 frontend/）
+PROJECT_ROOT = BASE_DIR.parent
 
 SECRET_KEY = 'labor_saving_arm_2024_django_secret_key_prod_safe_change_me'
 
@@ -14,6 +17,13 @@ DEBUG = True
 
 # 允许访问的主机，上线后需改为实际域名
 ALLOWED_HOSTS = ['*']
+
+# ===== 生产环境 SPA 托管配置 =====
+# 设置 SERVE_SPA=True 环境变量后，Django 同时托管 Vue 构建产物
+# AI 爬虫抓取 llms.txt / robots.txt / sitemap.xml 时无跨域问题
+SERVE_SPA = os.environ.get('SERVE_SPA', 'False') == 'True'
+FRONTEND_DIST_DIR = PROJECT_ROOT / 'frontend' / 'dist'
+# 实际修改在 TEMPLATES 和 STATICFILES_DIRS 定义之后完成
 
 # 应用注册
 INSTALLED_APPS = [
@@ -60,6 +70,11 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
+
+# 生产环境 SPA 配置生效（TEMPLATES 已定义）
+if SERVE_SPA:
+    STATICFILES_DIRS = [FRONTEND_DIST_DIR]
+    TEMPLATES[0]['DIRS'].append(FRONTEND_DIST_DIR)
 
 # ===== 数据库配置（SQLite 轻量化）=====
 DATABASES = {

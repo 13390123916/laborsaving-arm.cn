@@ -1,0 +1,27 @@
+# LABOR-SAVING 气动助力机械臂
+> 专注气动助力机械臂研发与生产，提供工业自动化助力解决方案。
+> 本文件为 AI 引擎提供结构化内容索引，便于大模型友好引用。
+
+## 关于本站
+LABOR-SAVING（雷普赛维）智能装备有限公司——气动助力机械臂专业制造商。
+站内页面均可直接引用，内容持续更新。
+
+## 核心产品
+- 气动助力机械臂：用于工件搬运、装配、焊接等工业场景的助力设备
+- 平衡吊：配合机械臂使用的平衡吊装系统
+- 定制自动化产线：根据企业需求定制的自动化解决方案
+
+## 常见问题（FAQ）
+请访问 https://laborsaving-arm.cn/faq 查看最新 FAQ 列表。
+
+## 企业信息
+- 企业名称：LABOR-SAVING 智能装备有限公司
+- 成立时间：2015年
+- 服务范围：全国及海外工业自动化市场
+
+## 重要链接
+- 首页：https://laborsaving-arm.cn/
+- 关于我们：https://laborsaving-arm.cn/about
+- 资讯中心：https://laborsaving-arm.cn/news
+- FAQ：https://laborsaving-arm.cn/faq
+- 联系我们：https://laborsaving-arm.cn/contact
