@@ -6,6 +6,8 @@ from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils import timezone
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from .models import Article, Faq, Contact, SiteConfig
 from .serializers import (SiteConfigSerializer, ArticleListSerializer,
                           ArticleDetailSerializer, FaqSerializer, ContactSerializer)
@@ -95,6 +97,7 @@ class FaqViewSet(viewsets.ViewSet):
         })
 
 
+@method_decorator(csrf_exempt, name='create')
 class ContactViewSet(viewsets.ViewSet):
     """联系表单接口"""
     def create(self, request):

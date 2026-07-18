@@ -72,6 +72,21 @@ const submitting = ref(false)
 const successMsg = ref('')
 const errorMsg = ref('')
 
+// 将后端返回的字段级错误拼成可读文案（保留已填内容，不丢失）
+const buildErrMsg = (res) => {
+  const data = res && res.data
+  if (data && typeof data === 'object') {
+    const parts = []
+    for (const [field, msgs] of Object.entries(data)) {
+      const label = { name: '姓名', phone: '电话', email: '邮箱', message: '留言' }[field] || field
+      const text = Array.isArray(msgs) ? msgs.join('；') : msgs
+      parts.push(`${label}：${text}`)
+    }
+    if (parts.length) return '提交失败，请修正：' + parts.join('；')
+  }
+  return (res && res.message) || '提交失败，请稍后重试'
+}
+
 const submitForm = async () => {
   submitting.value = true
   successMsg.value = ''
@@ -92,9 +107,11 @@ const submitForm = async () => {
     const res = await contactApi.submit(form.value)
     if (res.code === 200) {
       successMsg.value = '提交成功，我们会尽快与您联系！'
+      // 仅成功时清空表单；失败保留已填内容，避免用户重复输入
       form.value = { name: '', phone: '', email: '', message: '', source: '' }
     } else {
-      errorMsg.value = res.message || '提交失败，请稍后重试'
+      // 优先展示后端返回的字段级校验错误，方便用户直接修改
+      errorMsg.value = buildErrMsg(res)
     }
   } catch (e) {
     errorMsg.value = '网络错误，请稍后重试'
