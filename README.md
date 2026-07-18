@@ -6,6 +6,8 @@
 [![Django](https://img.shields.io/badge/Backend-Django-0c4b33)](https://djangoproject.com/)
 [![SQLite](https://img.shields.io/badge/Database-SQLite-003b57)](https://sqlite.org/)
 
+**仓库地址**：[github.com/13390123916/laborsaving-arm.cn](https://github.com/13390123916/laborsaving-arm.cn)
+
 ---
 
 ## 项目简介
@@ -42,30 +44,32 @@ laborsaving-arm.cn/
 ├── backend/                 # Django 后端
 │   ├── config/              # 项目配置（settings/urls/wsgi）
 │   ├── api/                 # 应用（models/views/serializers/urls）
-│   │   ├── models.py        # 数据库模型
-│   │   ├── views.py         # API 视图
+│   │   ├── models.py        # 数据库模型（5张核心表）
+│   │   ├── views.py         # API 视图（RESTful）
 │   │   ├── serializers.py   # 序列化器
-│   │   ├── urls.py          # API 路由
-│   │   ├── seo_urls.py      # SEO 路由（llms/robots/sitemap）
+│   │   ├── urls.py          # API 路由（/api/）
+│   │   ├── seo_urls.py      # SEO 路由（llms/robots/sitemap/schema）
 │   │   ├── admin.py         # 后台管理
-│   │   └── init_data.py     # 初始化数据
+│   │   ├── init_data.py     # 初始化数据（站点配置/15条FAQ/3篇资讯）
+│   │   └── migrations/      # 数据库迁移文件
 │   ├── manage.py
 │   ├── requirements.txt
-│   └── db.sqlite3           # 数据库文件
+│   └── db.sqlite3           # 数据库文件（运行时生成）
 ├── frontend/                # Vue3 前端
 │   ├── src/
-│   │   ├── views/           # 页面组件
-│   │   ├── components/      # 公共组件
-│   │   ├── api/             # API 封装
+│   │   ├── views/           # 页面组件（6个页面）
+│   │   ├── api/             # API 封装（axios）
 │   │   ├── router/          # 路由
-│   │   ├── plugins/         # SEO 插件
-│   │   └── assets/          # 样式
+│   │   ├── plugins/         # SEO 插件（TDK/统计代码）
+│   │   └── assets/          # 全局样式
 │   ├── package.json
+│   ├── index.html           # 含站长验证meta标签
 │   └── vite.config.js
 └── docs/                    # 文档
     ├── SEO配置说明.md
     ├── Navicat配置教程.md
-    └── API接口文档.md
+    ├── API接口文档.md
+    └── 部署文档.md
 ```
 
 ---
@@ -109,9 +113,19 @@ python manage.py createsuperuser
 | 首页 | Hero、核心产品、企业优势、FAQ预览、转化CTA |
 | 关于我们 | 企业实体信用卡片、资质实力、服务范围、实景 |
 | 资讯中心 | 分类筛选、列表、详情、独立TDK |
-| FAQ | 15条采购高频问答，固定结构，分类筛选 |
-| 联系我们 | 咨询表单、转化埋点、线索存储 |
-| 后台管理 | 数据可视化增删改查 |
+| FAQ | 15条采购高频问答，固定结构（问题→答案→详述），分类筛选 |
+| 联系我们 | 咨询表单（姓名/电话/留言）、转化埋点、线索存储 |
+| 后台管理 | 数据可视化增删改查（Django Admin） |
+
+### 数据库表结构
+
+| 表名 | 说明 | 关键字段 |
+|------|------|----------|
+| `user` | 用户表 | username, phone, department |
+| `site_config` | 站点配置 | site_name, company_name, baidu_verify, baidu_tongji... |
+| `article` | 资讯文章 | title, content, seo_title, views, status |
+| `faq` | FAQ问答 | question, answer, detail, category |
+| `contact` | 联系表单 | name, phone, message, is_handled |
 
 ---
 
@@ -136,6 +150,8 @@ python manage.py createsuperuser
 
 ## 部署上线
 
+详见 [docs/部署文档.md](docs/部署文档.md)
+
 1. 前端 `npm run build` 生成静态文件
 2. 静态文件部署至 Nginx / CDN
 3. 后端使用 Gunicorn + Nginx 部署 Django
@@ -145,6 +161,30 @@ python manage.py createsuperuser
 
 ---
 
+## API 接口
+
+详见 [docs/API接口文档.md](docs/API接口文档.md)
+
+基础地址：`/api/`，统一返回格式 `{code, message, data}`
+
+| 接口 | 方法 | 说明 |
+|------|------|------|
+| `/site-config/info/` | GET | 获取站点配置 |
+| `/articles/` | GET | 文章列表（支持分类/分页） |
+| `/articles/{id}/` | GET | 文章详情（浏览量+1） |
+| `/articles/categories/` | GET | 文章分类列表 |
+| `/faqs/` | GET | FAQ列表（支持分类） |
+| `/contacts/` | POST | 提交联系表单 |
+| `/contacts/stats/` | GET | 线索统计 |
+
+SEO 路由：`/llms.txt` · `/robots.txt` · `/sitemap.xml` · `/schema/organization.json`
+
+---
+
 ## 许可证
 
 本项目仅供企业官网建设学习与交流使用。
+
+---
+
+> **更新日期**：2026-07-18 · 全栈代码已推送至 GitHub 仓库
