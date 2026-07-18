@@ -22,6 +22,25 @@ config, created = SiteConfig.objects.get_or_create(
         'contact_phone': '400-888-xxxx',
         'contact_email': 'sales@laborsaving-arm.cn',
         'contact_qq': '800xxxxxx',
+        # SEO 验证与统计代码（上线前替换为真实值）
+        # 百度站长验证: 从百度站长平台获取
+        'baidu_verify': 'code-labor-saving-baidu-verify',
+        # 百度统计 ID: hm.baidu.com 中的跟踪 ID (格式: xxxxxxxx)
+        'baidu_tongji': '0000000000000000',
+        # 百度推送 Token: 百度站长平台-链接提交-主动推送 获取
+        'baidu_push_token': '',
+        # 360站长验证: 从 360 站长平台获取
+        'qihu_verify': 'code-360-qihoo-verify',
+        # 搜狗站长验证: 从搜狗站长平台获取
+        'sogou_verify': 'code-sogou-site-verify',
+        # Google Search Console 验证
+        'google_verify': 'google-search-console-verify-code',
+        # Google Analytics 4 测量 ID (格式: G-xxxxxxxxxx)
+        'google_ga_id': 'G-0000000000',
+        # Google Ads 转化 ID
+        'google_ads_id': '',
+        # Google Tag Manager 容器 ID (格式: GTM-xxxxxxx)
+        'gtm_id': 'GTM-0000000',
     }
 )
 print(f"站点配置: {'创建' if created else '已存在'}")

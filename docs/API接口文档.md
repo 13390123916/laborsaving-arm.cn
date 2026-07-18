@@ -138,18 +138,36 @@ GET /api/contacts/stats/
 
 ---
 
-## 五、SEO 路由
+## 五、产品
+
+### 产品列表
+```
+GET /api/products/
+```
+**响应：**
+```json
+{
+  "code": 200,
+  "message": "success",
+  "data": [
+    { "id": 1, "name": "气动助力机械臂", "icon": "🦾", "description": "..." }
+  ]
+}
+```
+
+---
+
+## 六、SEO 路由
 
 | 路径 | 说明 |
 |------|------|
 | `/llms.txt` | AI 引擎友好索引文件 |
 | `/robots.txt` | 爬虫规则 |
 | `/sitemap.xml` | 站点地图 |
-| `/schema/organization.json` | 企业结构化数据 |
 
 ---
 
-## 六、错误码
+## 七、错误码
 
 | code | 说明 |
 |------|------|

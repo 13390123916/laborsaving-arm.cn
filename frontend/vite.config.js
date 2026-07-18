@@ -20,6 +20,18 @@ export default defineConfig({
       }
     }
   },
+  // preview 模式也代理 API（用于构建期预渲染 SSG）
+  preview: {
+    port: 4173,
+    strictPort: true,
+    host: '127.0.0.1',
+    proxy: {
+      '/api': {
+        target: 'http://127.0.0.1:8000',
+        changeOrigin: true
+      }
+    }
+  },
   build: {
     outDir: 'dist',
     chunkSizeWarningLimit: 500
