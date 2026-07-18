@@ -1,0 +1,4 @@
+# LABOR-SAVING 气动助力机械臂企业官网 - 后端依赖
+Django==5.2.16
+djangorestframework==3.17.1
+django-cors-headers==4.9.0
