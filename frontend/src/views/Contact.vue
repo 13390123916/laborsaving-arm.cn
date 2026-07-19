@@ -48,6 +48,31 @@
               <input v-model="form.phone" type="tel" placeholder="请输入联系电话" required />
             </div>
             <div class="form-group">
+              <label>意向代理区域</label>
+              <select v-model="form.intent_region">
+                <option value="">请选择（选填）</option>
+                <option value="华东">华东</option>
+                <option value="华南">华南</option>
+                <option value="华北">华北</option>
+                <option value="华中">华中</option>
+                <option value="西南">西南</option>
+                <option value="西北">西北</option>
+                <option value="东北">东北</option>
+                <option value="其他">其他/海外</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>投资预算区间</label>
+              <select v-model="form.budget_range">
+                <option value="">请选择（选填）</option>
+                <option value="10万以下">10 万以下</option>
+                <option value="10-30万">10-30 万</option>
+                <option value="30-50万">30-50 万</option>
+                <option value="50万以上">50 万以上</option>
+                <option value="待定">待定/需评估</option>
+              </select>
+            </div>
+            <div class="form-group">
               <label>邮箱</label>
               <input v-model="form.email" type="email" placeholder="选填" />
             </div>
@@ -73,10 +98,20 @@ import { siteApi, contactApi } from '@/api'
 import { useJsonLd, buildOrganizationSchema } from '@/composables/useJsonLd'
 
 const config = ref({})
-const form = ref({ name: '', phone: '', email: '', message: '', source: '' })
+const form = ref({ name: '', phone: '', email: '', message: '', source: '', intent_region: '', budget_range: '', lead_source: '' })
 const submitting = ref(false)
 const successMsg = ref('')
 const errorMsg = ref('')
+
+// 线索来源归因（GEO §3.4：ai / search / direct / other），用于统计 AI 引擎招商线索
+const detectLeadSource = () => {
+  const ref = (document.referrer || '').toLowerCase()
+  const ua = (navigator.userAgent || '').toLowerCase()
+  if (/openai|chatgpt|bing\.com\/chat|claude|anthropic|gemini|google\.com\/search.*ai|aibrowser|doubao|yuanbao|tongyi|qianwen|wenxin|baidu.*ai/.test(ref + ' ' + ua)) return 'ai'
+  if (/baidu|google|bing|sogou|so\.com|360|haosou|yandex|duckduckgo/.test(ref)) return 'search'
+  if (ref) return 'other'
+  return 'direct'
+}
 
 // 注入 Organization 结构化数据
 const { inject: injectOrgSchema } = useJsonLd('schema-organization')
@@ -100,16 +135,21 @@ const submitForm = async () => {
   submitting.value = true
   successMsg.value = ''
   errorMsg.value = ''
-  // 记录来源页面
+  // 记录来源页面与线索归因
   form.value.source = window.location.pathname
+  form.value.lead_source = detectLeadSource()
 
-  // 转化事件埋点 - 百度统计
+  // 转化事件埋点 - 百度统计（招商线索语义，SEO-skill §9.2）
   if (window._hmt) {
-    window._hmt.push(['_trackEvent', 'form', 'submit', 'contact_form'])
+    window._hmt.push(['_trackEvent', '招商线索', '提交', '代理意向'])
   }
-  // 转化事件埋点 - GTM
+  // 转化事件埋点 - GTM（leadType / leadSource 供 GEO 归因，GEO §3.4）
   if (window.dataLayer) {
-    window.dataLayer.push({ event: 'form_submit', form_type: 'contact' })
+    window.dataLayer.push({
+      event: 'lead_submit',
+      leadType: 'franchise',
+      leadSource: form.value.lead_source
+    })
   }
 
   try {
@@ -117,7 +157,7 @@ const submitForm = async () => {
     if (res.code === 200) {
       successMsg.value = '提交成功，我们会尽快与您联系！'
       // 仅成功时清空表单；失败保留已填内容，避免用户重复输入
-      form.value = { name: '', phone: '', email: '', message: '', source: '' }
+      form.value = { name: '', phone: '', email: '', message: '', source: '', intent_region: '', budget_range: '', lead_source: '' }
     } else {
       // 优先展示后端返回的字段级校验错误，方便用户直接修改
       errorMsg.value = buildErrMsg(res)

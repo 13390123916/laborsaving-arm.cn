@@ -55,7 +55,8 @@ if getattr(settings, 'SERVE_SPA', False):
     urlpatterns += [
         # 媒体文件（上传的图片/文档/视频）由 Django 提供静态服务
         re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}, name='media-serve'),
-        # 静态资产 /assets/ 由 Django 自动服务（STATICFILES_DIRS 已指向 dist）
-        # 所有非 /api、/admin、/static、/media 路径 → 按路由快照分发
-        re_path(r'^(?!api/|admin/|static/|media/).*$', spa_fallback, name='spa-fallback'),
+        # 静态资产 /assets/、/static/ 由 Django 自动服务（STATICFILES_DIRS 已指向 dist）
+        # 所有非 /api、/admin、/static、/media、/assets 路径 → 按路由快照分发
+        # 注意：必须排除 /assets/，否则 JS/CSS 会被兜底成 index.html（HTML），导致前端交互失效
+        re_path(r'^(?!api/|admin/|static/|media/|assets/|favicon\.ico).*$', spa_fallback, name='spa-fallback'),
     ]

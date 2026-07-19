@@ -80,6 +80,9 @@ class SiteConfig(models.Model):
     icp_link = models.CharField(max_length=200, blank=True, null=True,
                                 default='https://beian.miit.gov.cn', verbose_name='备案查询链接')
 
+    # GEO/EEAT：权威外链（sameAs），逗号或换行分隔；填入真实主页后生效，提升企业实体信任度
+    same_as = models.TextField(blank=True, null=True, verbose_name='权威外链sameAs')
+
     # 预留扩展字段
     ext_config1 = models.TextField(blank=True, null=True, verbose_name='扩展配置1')
     ext_config2 = models.TextField(blank=True, null=True, verbose_name='扩展配置2')
@@ -170,6 +173,10 @@ class Contact(models.Model):
     email = models.CharField(max_length=100, blank=True, null=True, verbose_name='邮箱')
     message = models.TextField(verbose_name='留言内容')
     source = models.CharField(max_length=50, blank=True, null=True, verbose_name='来源页面')
+    # 招商转化增强（SEO-skill §9.1 / GEO §3.4）
+    intent_region = models.CharField(max_length=50, blank=True, null=True, verbose_name='意向代理区域')
+    budget_range = models.CharField(max_length=50, blank=True, null=True, verbose_name='投资预算区间')
+    lead_source = models.CharField(max_length=20, blank=True, null=True, verbose_name='线索来源(ai/search/direct/other)')
     ip_address = models.CharField(max_length=50, blank=True, null=True, verbose_name='IP地址')
     is_handled = models.BooleanField(default=False, verbose_name='是否已处理')
     created_at = models.DateTimeField(auto_now_add=True, verbose_name='提交时间')

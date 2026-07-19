@@ -57,6 +57,11 @@ export function buildOrganizationSchema(config) {
     : undefined
 
   // 采用 LocalBusiness（Organization 子类型），兼顾企业信息与本地 SEO 地理收录
+  // GEO 增强：areaServed 用 Country CN（全国），sameAs 权威外链，makesOffer 招商语义
+  const sameAs = (config.same_as && typeof config.same_as === 'string')
+    ? config.same_as.split(/[,\n]/).map(s => s.trim()).filter(Boolean)
+    : []
+
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'LocalBusiness',
@@ -72,7 +77,16 @@ export function buildOrganizationSchema(config) {
       postalCode: config.postal_code || '',
       addressCountry: 'CN'
     },
-    areaServed: config.service_scope || '全国及海外工业自动化市场'
+    // GEO §3.2：areaServed 用 Country CN 表达"全国"，与 address 真实辽宁地址分离
+    areaServed: { '@type': 'Country', name: 'CN' }
+  }
+  if (sameAs.length) schema.sameAs = sameAs
+  // GEO §3.2：招商语义（Service + Offer），供 AI 识别企业招商能力
+  schema.makesOffer = {
+    '@type': 'Offer',
+    category: '区域代理授权',
+    description: '区域保护、价格政策、产品培训、售后技术支持',
+    areaServed: { '@type': 'Country', name: 'CN' }
   }
   if (geo) schema.geo = geo
   if (config.contact_phone || config.contact_email) {

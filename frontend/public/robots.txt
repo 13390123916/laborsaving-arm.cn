@@ -5,20 +5,30 @@ Allow: /
 User-agent: Baiduspider
 Allow: /
 
+# 360 爬虫
+User-agent: 360Spider
+Allow: /
+
 # Google 爬虫
 User-agent: Googlebot
 Allow: /
 
-# AI 爬虫友好
+# AI 引擎爬虫（GEO：显式放行，确保大模型可读取并引用）
 User-agent: GPTBot
 Allow: /
-User-agent: CCBot
-Allow: /
 User-agent: ChatGPT-User
+Allow: /
+User-agent: CCBot
 Allow: /
 User-agent: Claude-Web
 Allow: /
 User-agent: PerplexityBot
 Allow: /
+User-agent: Bytespider
+Allow: /
+
+# 允许 AI 读取站点导读
+Allow: /llms.txt
+Allow: /llms-full.txt
 
 Sitemap: https://laborsaving-arm.cn/sitemap.xml

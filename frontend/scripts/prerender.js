@@ -36,19 +36,50 @@ const CHROME_BIN = process.env.CHROME_BIN || '/usr/bin/chromium'
 const RENDER_WAIT_MS = 1000
 const NO_SERVER = process.argv.includes('--no-server')
 
-const ROUTES = [
+// 静态路由（核心栏目页）
+const STATIC_ROUTES = [
   { path: '/', name: '首页' },
   { path: '/about', name: '关于我们' },
   { path: '/news', name: '资讯中心' },
-  { path: '/news/1', name: '资讯详情1' },
-  { path: '/news/2', name: '资讯详情2' },
-  { path: '/news/3', name: '资讯详情3' },
-  { path: '/news/4', name: '资讯详情4' },
-  { path: '/news/5', name: '资讯详情5' },
-  { path: '/news/6', name: '资讯详情6' },
   { path: '/faq', name: 'FAQ' },
   { path: '/contact', name: '联系我们' },
 ]
+
+// 资讯详情路由：从后端 API 动态拉取**全部**已发布文章，
+// 避免硬编码 /news/1..6 导致其余详情页对爬虫/AI 引擎不可见（GEO 空壳风险）。
+const API_BASE = process.env.API_BASE || 'http://127.0.0.1:8000'
+
+async function fetchArticleRoutes() {
+  const routes = []
+  try {
+    let page = 1
+    while (true) {
+      const res = await fetch(`${API_BASE}/api/articles/?page=${page}&page_size=100`)
+      if (!res.ok) break
+      const json = await res.json()
+      const list = json?.data?.list || []
+      for (const a of list) {
+        // slug 为空时回退数字 ID，与前端路由 /news/:id 对齐
+        const seg = a.slug ? encodeURIComponent(a.slug) : a.id
+        routes.push({ path: `/news/${seg}`, name: `资讯详情${a.id || seg}` })
+      }
+      const total = json?.data?.total || 0
+      const fetched = (page - 1) * 100 + list.length
+      if (list.length === 0 || fetched >= total) break
+      page++
+    }
+  } catch (e) {
+    console.warn(`   ⚠ 拉取资讯列表失败，回退 /news/1..6：${e.message}`)
+    for (let i = 1; i <= 6; i++) routes.push({ path: `/news/${i}`, name: `资讯详情${i}` })
+  }
+  return routes
+}
+
+async function buildRoutes() {
+  const articleRoutes = await fetchArticleRoutes()
+  console.log(`   静态路由 ${STATIC_ROUTES.length} 条 + 资讯详情 ${articleRoutes.length} 条`)
+  return [...STATIC_ROUTES, ...articleRoutes]
+}
 
 /** 写入 HTML 到目标路径 */
 function writeHtml(routePath, html) {
@@ -120,10 +151,12 @@ async function main() {
     console.error('   ✗', err.message)
     process.exit(1)
   }
-  console.log(`   ✓ 已启动，共 ${ROUTES.length} 条路由`)
+  console.log(`   ✓ 浏览器已启动`)
 
-  // 预渲染
+  // 预渲染路由：静态路由 + 动态拉取的全部已发布资讯
   console.log('[3/4] 预渲染路由...')
+  const ROUTES = await buildRoutes()
+  console.log(`   ✓ 共 ${ROUTES.length} 条路由`)
   const results = []
   const page = await browser.newPage()
   await page.setViewport({ width: 1920, height: 1080 })

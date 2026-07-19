@@ -25,7 +25,7 @@ const routes = [
     component: About,
     meta: {
       title: '关于我们 | LABOR-SAVING 气动助力机械臂',
-      keywords: '助力机械臂厂家,工业自动化企业,LABOR-SAVING,企业资质,辽宁机械臂厂,沈阳机械臂厂家',
+      keywords: '助力机械臂厂家,工业自动化企业,LABOR-SAVING,企业资质,气动助力机械臂厂家,智能装备',
       description: '了解 LABOR-SAVING 智能装备有限公司——专注气动助力机械臂研发生产10余年，服务500+企业客户的实力厂家。'
     }
   },
@@ -87,7 +87,9 @@ router.afterEach((to) => {
   setTDK({
     title: meta.title || site.site_title || 'LABOR-SAVING 气动助力机械臂',
     keywords: meta.keywords || site.site_keywords || '',
-    description: meta.description || site.site_description || ''
+    description: meta.description || site.site_description || '',
+    path: to.path || '/',
+    ogImage: site.logo_url || ''
   })
 })
 

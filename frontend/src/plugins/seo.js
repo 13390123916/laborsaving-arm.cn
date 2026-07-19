@@ -93,6 +93,40 @@ function setTDK(tdk) {
   }
   setMetaTag('keywords', tdk.keywords)
   setMetaTag('description', tdk.description)
+  // canonical + OpenGraph（深度研究报告 §2.2：利于分享预览与规范化收录）
+  setCanonicalOg(tdk)
+}
+
+// 注入 canonical 与 OpenGraph（按路由动态，避免重复收录）
+function setCanonicalOg(tdk) {
+  if (!tdk || !tdk.path) return
+  const base = 'https://laborsaving-arm.cn'
+  const url = base + tdk.path
+
+  let cano = document.querySelector('link[rel="canonical"]')
+  if (!cano) {
+    cano = document.createElement('link')
+    cano.setAttribute('rel', 'canonical')
+    document.head.appendChild(cano)
+  }
+  cano.setAttribute('href', url)
+
+  const setOg = (prop, content) => {
+    if (!content) return
+    let el = document.querySelector(`meta[property="${prop}"]`)
+    if (!el) {
+      el = document.createElement('meta')
+      el.setAttribute('property', prop)
+      document.head.appendChild(el)
+    }
+    el.setAttribute('content', content)
+  }
+  setOg('og:type', 'website')
+  setOg('og:url', url)
+  setOg('og:title', tdk.title || document.title)
+  setOg('og:description', tdk.description || '')
+  if (tdk.ogImage) setOg('og:image', tdk.ogImage)
+  setOg('og:site_name', 'LABOR-SAVING 气动助力机械臂')
 }
 
 // 写入结构化数据 Schema（JSON-LD），按 id 区分页面互不覆盖
@@ -112,7 +146,7 @@ function getSiteConfig() {
   return siteConfigCache
 }
 
-export { setTDK, setSchemaJsonLd, getSiteConfig }
+export { setTDK, setCanonicalOg, setSchemaJsonLd, getSiteConfig }
 
 export default {
   install(app) {
