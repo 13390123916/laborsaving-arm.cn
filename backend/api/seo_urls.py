@@ -126,8 +126,8 @@ def schema_json(request):
         "address": {
             "@type": "PostalAddress",
             "streetAddress": config.office_address or "",
-            "addressLocality": config.address_locality or "青岛市",
-            "addressRegion": config.address_region or "山东省",
+            "addressLocality": config.address_locality or "沈阳市",
+            "addressRegion": config.address_region or "辽宁省",
             "postalCode": config.postal_code or "",
             "addressCountry": "CN"
         },

@@ -209,6 +209,14 @@ img {
   font-weight: 700;
 }
 
+/* —— 电话链接（移动端一键拨号） —— */
+.tel-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: 600;
+}
+.tel-link:hover { color: var(--primary); }
+
 /* —— 移动端适配 —— */
 @media (max-width: 679px) {
   .section { padding: 36px 0; }

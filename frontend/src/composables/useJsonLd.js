@@ -67,8 +67,8 @@ export function buildOrganizationSchema(config) {
     address: {
       '@type': 'PostalAddress',
       streetAddress: config.office_address || '',
-      addressLocality: config.address_locality || '青岛市',
-      addressRegion: config.address_region || '山东省',
+      addressLocality: config.address_locality || '沈阳市',
+      addressRegion: config.address_region || '辽宁省',
       postalCode: config.postal_code || '',
       addressCountry: 'CN'
     },

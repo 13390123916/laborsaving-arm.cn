@@ -15,7 +15,7 @@
           <h3>联系方式</h3>
           <div class="info-item">
             <span class="info-label">电话</span>
-            <span>{{ config.contact_phone || '400-888-xxxx' }}</span>
+            <a :href="'tel:' + (config.contact_phone || '')" class="tel-link">{{ config.contact_phone || '400-888-xxxx' }}</a>
           </div>
           <div class="info-item">
             <span class="info-label">邮箱</span>
@@ -70,12 +70,16 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { siteApi, contactApi } from '@/api'
+import { useJsonLd, buildOrganizationSchema } from '@/composables/useJsonLd'
 
 const config = ref({})
 const form = ref({ name: '', phone: '', email: '', message: '', source: '' })
 const submitting = ref(false)
 const successMsg = ref('')
 const errorMsg = ref('')
+
+// 注入 Organization 结构化数据
+const { inject: injectOrgSchema } = useJsonLd('schema-organization')
 
 // 将后端返回的字段级错误拼成可读文案（保留已填内容，不丢失）
 const buildErrMsg = (res) => {
@@ -128,7 +132,10 @@ const submitForm = async () => {
 onMounted(async () => {
   try {
     const res = await siteApi.getConfig()
-    if (res.code === 200) config.value = res.data
+    if (res.code === 200) {
+      config.value = res.data
+      injectOrgSchema(buildOrganizationSchema(res.data))
+    }
   } catch (e) { console.error(e) }
 })
 </script>

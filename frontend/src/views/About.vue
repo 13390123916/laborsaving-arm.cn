@@ -31,7 +31,7 @@
           </div>
           <div class="fact-item">
             <span class="fact-label">联系电话</span>
-            <span class="fact-value">{{ config.contact_phone }}</span>
+            <a :href="'tel:' + (config.contact_phone || '')" class="tel-link">{{ config.contact_phone }}</a>
           </div>
         </div>
       </div>
@@ -97,12 +97,16 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
 import { siteApi, certificateApi, milestoneApi } from '@/api'
+import { useJsonLd, buildOrganizationSchema } from '@/composables/useJsonLd'
 
 const config = ref({})
 const certList = ref([])
 const milestones = ref([])
 const carouselIndex = ref(0)
 let carouselTimer = null
+
+// 注入 Organization/LocalBusiness 结构化数据（关于页是企业实体背书核心页面）
+const { inject: injectOrgSchema } = useJsonLd('schema-organization')
 
 const scenes = [
   { icon: '🏭', label: '办公大楼' },
@@ -123,7 +127,11 @@ onMounted(async () => {
       certificateApi.list(),
       milestoneApi.list()
     ])
-    if (c.code === 200) config.value = c.data
+    if (c.code === 200) {
+      config.value = c.data
+      // 注入 Organization JSON-LD，与首页和后端 /schema/organization.json 对齐
+      injectOrgSchema(buildOrganizationSchema(c.data))
+    }
     if (certRes.code === 200) certList.value = certRes.data
     if (mileRes.code === 200) milestones.value = mileRes.data
   } catch (e) {

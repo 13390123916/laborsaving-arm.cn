@@ -37,6 +37,8 @@ config, created = SiteConfig.objects.get_or_create(
         'baidu_push_token': '',
         # 360站长验证: 从 360 站长平台获取
         'qihu_verify': 'code-360-qihoo-verify',
+        # 360 自动收录脚本 URL（360 站长平台获取最新地址后替换）
+        'qihu_push_url': 'https://s.ssl.qhres2.com/ssl/ab77b6ea7ac43b89.js',
         # 搜狗站长验证: 从搜狗站长平台获取
         'sogou_verify': 'code-sogou-site-verify',
         # Google Search Console 验证
@@ -233,7 +235,7 @@ print(f"资质证书数据: 共 {len(certificate_data)} 项")
 
 # ===== 企业历程数据 =====
 milestone_data = [
-    {'year': '2015', 'title': '公司成立', 'description': 'LABOR-SAVING 智能装备有限公司在山东青岛正式成立。', 'sort_order': 0},
+    {'year': '2015', 'title': '公司成立', 'description': 'LABOR-SAVING 智能装备有限公司在辽宁沈阳正式成立。', 'sort_order': 0},
     {'year': '2016', 'title': '首款产品下线', 'description': '首款气动助力机械臂量产下线，通过CE安全认证。', 'sort_order': 1},
     {'year': '2018', 'title': '通过ISO9001认证', 'description': '建立标准化质量体系，产品线扩展至5大系列。', 'sort_order': 2},
     {'year': '2020', 'title': '服务客户突破300家', 'description': '累计服务客户超过300家，年销售额突破8000万元。', 'sort_order': 3},
@@ -245,5 +247,18 @@ milestone_data = [
 for m in milestone_data:
     Milestone.objects.get_or_create(year=m['year'], title=m['title'], defaults=m)
 print(f"企业历程数据: 共 {len(milestone_data)} 项")
+
+# ===== 创建超级管理员账号（幂等）=====
+from django.contrib.auth import get_user_model
+User = get_user_model()
+ADMIN_USERNAME = 'admin'
+ADMIN_EMAIL = 'admin@laborsaving-arm.cn'
+ADMIN_PASSWORD = 'Laborsaving2024!'  # 首次部署后请立即在后台修改
+
+if not User.objects.filter(username=ADMIN_USERNAME).exists():
+    User.objects.create_superuser(ADMIN_USERNAME, ADMIN_EMAIL, ADMIN_PASSWORD)
+    print(f"超级管理员已创建: {ADMIN_USERNAME} / {ADMIN_PASSWORD}")
+else:
+    print(f"超级管理员已存在: {ADMIN_USERNAME}")
 
 print("\n初始化完成！")

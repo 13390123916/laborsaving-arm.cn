@@ -67,6 +67,7 @@ class SiteConfig(models.Model):
     baidu_tongji = models.CharField(max_length=50, blank=True, null=True, verbose_name='百度统计ID')
     baidu_push_token = models.CharField(max_length=100, blank=True, null=True, verbose_name='百度推送Token')
     qihu_verify = models.CharField(max_length=100, blank=True, null=True, verbose_name='360验证代码')
+    qihu_push_url = models.CharField(max_length=255, blank=True, null=True, verbose_name='360自动收录脚本URL')
     sogou_verify = models.CharField(max_length=100, blank=True, null=True, verbose_name='搜狗验证代码')
     google_verify = models.CharField(max_length=100, blank=True, null=True, verbose_name='Google验证代码')
     google_ga_id = models.CharField(max_length=50, blank=True, null=True, verbose_name='Google Analytics ID')

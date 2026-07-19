@@ -33,10 +33,10 @@ function injectStatsScripts(config) {
     push.async = true
     document.head.appendChild(push)
   }
-  // 360 自动收录（规范地址：qhres2.com/sozz 加载器，脚本节点 id=sozz）
-  if (STATS_CONFIG.qihuPush) {
+  // 360 自动收录（从站点配置读取脚本 URL，如果为空或失效则不加载，避免死链 404）
+  if (STATS_CONFIG.qihuPush && config.qihu_push_url) {
     const sozz = document.createElement('script')
-    sozz.src = 'https://s.ssl.qhres2.com/ssl/ab77b6ea7ac43b89.js'
+    sozz.src = config.qihu_push_url
     sozz.async = true
     sozz.id = 'sozz'
     document.head.appendChild(sozz)

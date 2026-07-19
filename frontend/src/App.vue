@@ -64,7 +64,7 @@
         </div>
         <div class="footer-col">
           <h4>联系方式</h4>
-          <p>电话：{{ siteConfig.contact_phone || '400-888-xxxx' }}</p>
+          <p>电话：<a :href="'tel:' + (siteConfig.contact_phone || '')" class="tel-link">{{ siteConfig.contact_phone || '400-888-xxxx' }}</a></p>
           <p>邮箱：{{ siteConfig.contact_email || 'sales@laborsaving-arm.cn' }}</p>
           <p>地址：{{ siteConfig.office_address || '辽宁沈阳' }}</p>
         </div>

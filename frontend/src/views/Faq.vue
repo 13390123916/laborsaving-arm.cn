@@ -106,7 +106,7 @@ onMounted(() => loadFaqs())
 .q-arrow { font-size: 0.7rem; color: var(--text-light); transition: transform 0.2s; }
 .q-arrow.open { transform: rotate(180deg); color: var(--primary); }
 .faq-answer { padding: 0 20px 20px 58px; }
-.answer-short { color: var(--primary); font-weight: 500; margin-bottom: 10px; }
+.answer-short { color: var(--text); font-weight: 600; margin-bottom: 10px; }
 .answer-detail { color: var(--text-light); line-height: 1.8; }
 .answer-detail :deep(p) { margin-bottom: 8px; }
 
