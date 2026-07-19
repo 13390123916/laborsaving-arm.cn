@@ -54,21 +54,22 @@
 
 ---
 
-## 四、新建对话 / 会话恢复流程
+## 四、新建对话 / 会话恢复流程（强制约定）
 
-新建对话或会话超时恢复时，按以下顺序加载上一次同项目基线：
+> **强制**：任何新开对话、会话超时恢复、或切换到本项目的对话，**第一步必须执行** `load_baseline.sh` 加载上一次同项目基线，再开始任何开发工作。本项目已在 `/workspace/AGENTS.md` 固化此约定，供所有对话（含非本次会话的 agent）遵循。
 
-1. 检测 `/workspace` 是否为空或缺失目标工程。
-2. 若为空 → 运行 `load_baseline.sh`（默认 `latest`）恢复到最新基线。
-3. 若已有工程但需回滚 → `load_baseline.sh <project> <基线id>` 精准恢复。
-4. 加载前自动对未提交改动存安全快照（除非 `--force`），确保不丢工作。
+加载逻辑（自动判定，无需人工判断状态）：
+
+1. 若本地快照存在 → 解包最新（或指定）基线到 `/workspace`，恢复前自动对未提交改动存安全快照，确保不丢工作。
+2. **兜底**：若本地快照缺失（如沙箱被整体重置）→ 自动从远程仓库 `main` 分支克隆完整工程回 `/workspace`，保证工程永不丢失。
+3. 若需回滚到历史基线 → `load_baseline.sh <project> <基线id>` 精准恢复（历史基线全部保留）。
 
 ```bash
-# 恢复最新基线（项目自动识别）
+# 恢复最新基线（项目自动识别，新对话首步必执行）
 /root/.codebuddy/baselines/_bin/load_baseline.sh
 
 # 指定项目 + 指定历史基线
-/root/.codebuddy/baselines/_bin/load_baseline.sh laborsaving-arm-cn bl-20250719T163700
+/root/.codebuddy/baselines/_bin/load_baseline.sh laborsaving-arm-cn bl-20260719T164536
 
 # 强制覆盖未提交改动
 /root/.codebuddy/baselines/_bin/load_baseline.sh laborsaving-arm-cn latest --force
@@ -100,3 +101,4 @@ git ls-remote https://github.com/<owner>/<repo>.git 2>/dev/null | grep baselines
 - **快照体积**：打包已排除 `.git / node_modules / __pycache__ / *.zip / *.tar.gz` 等大体积对象，保持快照轻量、推送快速。
 - **隐私/合规**：基线仅含工程源码与配置（符合项目合规约束），不含密钥或敏感凭据；若后续引入 `.env`，需在 `save_baseline.sh` 的排除列表中追加。
 - **不销毁历史**：`manifest.json` 仅追加，`snapshots/` 仅增不删；如需清理旧基线，由人工显式操作，脚本不自动清理。
+- **GitHub 镜像通道（已启用）**：写令牌经本地凭据文件 `/root/.codebuddy/baselines/.git-credentials`（权限 600）提供，`save_baseline.sh` 自动将 manifest + 最新快照 + 策略文档推送至 GitHub `<baselines>` 分支，作为跨会话权威恢复源；令牌不写入任何代码或日志。若令牌失效，脚本会自动跳过镜像、本地基线仍完整保留。

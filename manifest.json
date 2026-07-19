@@ -1,5 +1,5 @@
 {
-  "project": "laborsaving-arm.cn",
+  "project": "laborsaving-arm-cn",
   "remote": "https://github.com/13390123916/laborsaving-arm.cn.git",
   "baselines": [
     {
@@ -29,8 +29,22 @@
       "remote": "https://github.com/13390123916/laborsaving-arm.cn.git",
       "parent": "bl-20260719T163903",
       "snapshot": "snapshots/baseline-20260719T164536.tar.gz"
+    },
+    {
+      "id": "bl-20260719T170121",
+      "ts": "20260719T170121",
+      "iso": "2026-07-19T17:01:22",
+      "commit": "beb739c",
+      "branch": "main",
+      "dirty_files": 0,
+      "sha256": "a4dc51fcab34180eb9b1abd94fac3fc9d60619691272a9b63d7a5b188cdaa12c",
+      "size_bytes": 106720,
+      "desc": "post-commit: beb739c chore: 固化新对话启动即加载基线的强制约定(AGENTS.md) + 增强load兜底",
+      "remote": "https://github.com/13390123916/laborsaving-arm.cn.git",
+      "parent": "bl-20260719T164536",
+      "snapshot": "snapshots/baseline-20260719T170121.tar.gz"
     }
   ],
-  "updated": "2026-07-19T16:45:37",
-  "latest": "bl-20260719T164536"
+  "updated": "2026-07-19T17:01:22",
+  "latest": "bl-20260719T170121"
 }
