@@ -75,6 +75,11 @@ class SiteConfig(models.Model):
     google_ads_id = models.CharField(max_length=50, blank=True, null=True, verbose_name='Google Ads ID')
     gtm_id = models.CharField(max_length=50, blank=True, null=True, verbose_name='GTM容器ID')
 
+    # ICP 备案信息（备案通过后填入 SiteConfig.icp_beian，前端页脚展示；管局审核中先留空）
+    icp_beian = models.CharField(max_length=50, blank=True, null=True, verbose_name='ICP备案号')
+    icp_link = models.CharField(max_length=200, blank=True, null=True,
+                                default='https://beian.miit.gov.cn', verbose_name='备案查询链接')
+
     # 预留扩展字段
     ext_config1 = models.TextField(blank=True, null=True, verbose_name='扩展配置1')
     ext_config2 = models.TextField(blank=True, null=True, verbose_name='扩展配置2')

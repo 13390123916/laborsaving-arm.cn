@@ -18,7 +18,10 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
 # 允许访问的主机，上线后通过环境变量 ALLOWED_HOSTS 限定为实际域名（逗号分隔）
 ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
-ALLOWED_HOSTS = ALLOWED_HOSTS_ENV.split(',') if ALLOWED_HOSTS_ENV else ['*']
+# 上线默认收敛为真实域名白名单（仍可被环境变量 ALLOWED_HOSTS 精确覆盖，逗号分隔）
+ALLOWED_HOSTS = ALLOWED_HOSTS_ENV.split(',') if ALLOWED_HOSTS_ENV else [
+    'laborsaving-arm.cn', 'www.laborsaving-arm.cn', 'localhost', '127.0.0.1'
+]
 
 # ===== 生产环境 SPA 托管配置 =====
 # 设置 SERVE_SPA=True 环境变量后，Django 同时托管 Vue 构建产物

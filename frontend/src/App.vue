@@ -73,6 +73,11 @@
         <div class="container">
           <p>© 2015-{{ new Date().getFullYear() }} {{ siteConfig.company_name }} 版权所有</p>
           <p class="text-light">气动助力机械臂 · 工业自动化解决方案提供商</p>
+          <!-- ICP 备案号：管局审核通过后由后台『站点配置』填入，自动展示可点击链接 -->
+          <p v-if="siteConfig.icp_beian" class="icp-link">
+            <a :href="siteConfig.icp_link || 'https://beian.miit.gov.cn'" target="_blank" rel="noopener">{{ siteConfig.icp_beian }}</a>
+          </p>
+          <p v-else class="text-light icp-pending">ICP 备案号：管局审核中</p>
         </div>
       </div>
     </footer>
@@ -155,6 +160,9 @@ onMounted(async () => {
 }
 .footer-bottom { border-top: 1px solid var(--border); padding: 18px; text-align: center; font-size: 0.8rem; }
 .footer-bottom p { margin: 3px 0; }
+.footer-bottom .icp-link a { color: var(--text-light); text-decoration: none; }
+.footer-bottom .icp-link a:hover { color: var(--primary); }
+.footer-bottom .icp-pending { font-size: 0.75rem; }
 
 /* —— 滑动过渡 —— */
 .slide-enter-active, .slide-leave-active { transition: all 0.3s; }
