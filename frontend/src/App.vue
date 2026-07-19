@@ -36,6 +36,14 @@
       <router-view />
     </main>
 
+    <!-- 悬浮咨询入口 -->
+    <div class="floating-consult">
+      <router-link to="/contact" class="floating-btn" title="免费咨询">
+        <span class="floating-icon">💬</span>
+        <span class="floating-text">免费咨询</span>
+      </router-link>
+    </div>
+
     <!-- 页脚 -->
     <footer class="footer">
       <div class="container footer-inner">
@@ -116,6 +124,19 @@ onMounted(async () => {
 
 .slide-enter-active, .slide-leave-active { transition: all 0.3s; }
 .slide-enter-from, .slide-leave-to { opacity: 0; transform: translateY(-10px); }
+
+/* 悬浮咨询按钮 */
+.floating-consult { position: fixed; bottom: 32px; right: 24px; z-index: 999; }
+.floating-btn { display: flex; flex-direction: column; align-items: center; gap: 2px; background: var(--accent); color: #fff; padding: 12px 16px; border-radius: 50px; box-shadow: 0 4px 20px rgba(245, 166, 35, 0.4); text-decoration: none; transition: all 0.3s; cursor: pointer; border: none; }
+.floating-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 24px rgba(245, 166, 35, 0.5); }
+.floating-icon { font-size: 1.4rem; }
+.floating-text { font-size: 0.75rem; white-space: nowrap; }
+
+@media (max-width: 767px) {
+  .floating-consult { bottom: 20px; right: 16px; }
+  .floating-btn { padding: 10px 14px; }
+  .floating-text { font-size: 0.7rem; }
+}
 
 @media (min-width: 768px) {
   .footer-inner { grid-template-columns: 2fr 1fr 1fr; }

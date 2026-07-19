@@ -168,9 +168,7 @@ class Contact(models.Model):
 
 
 class Product(models.Model):
-    """产品表 - 企业核心产品/服务，后台可配置
-    替换 Home.vue 硬编码的产品卡片，实现"所有数据后台可配置"
-    """
+    """产品表 - 企业核心产品/服务，后台可配置"""
     name = models.CharField(max_length=100, verbose_name='产品名称')
     icon = models.CharField(max_length=10, default='🔧', verbose_name='显示图标')
     description = models.TextField(verbose_name='产品描述')
@@ -190,3 +188,56 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class Certificate(models.Model):
+    """资质证书表 - 后台可上传、排序展示"""
+    name = models.CharField(max_length=100, verbose_name='证书名称')
+    image_url = models.CharField(max_length=500, blank=True, null=True, verbose_name='证书图片URL')
+    description = models.CharField(max_length=255, blank=True, null=True, verbose_name='证书说明')
+    sort_order = models.IntegerField(default=0, verbose_name='排序')
+    is_active = models.BooleanField(default=True, verbose_name='是否显示')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+
+    class Meta:
+        db_table = 'certificate'
+        verbose_name = '资质证书'
+        verbose_name_plural = '资质证书'
+        ordering = ['sort_order', 'created_at']
+
+    def __str__(self):
+        return self.name
+
+
+class Milestone(models.Model):
+    """企业历程时间线表 - 后台可配置"""
+    year = models.CharField(max_length=20, verbose_name='年份')
+    title = models.CharField(max_length=200, verbose_name='里程碑事件')
+    description = models.TextField(blank=True, null=True, verbose_name='详细描述')
+    sort_order = models.IntegerField(default=0, verbose_name='排序')
+    is_active = models.BooleanField(default=True, verbose_name='是否显示')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+
+    class Meta:
+        db_table = 'milestone'
+        verbose_name = '企业历程'
+        verbose_name_plural = '企业历程'
+        ordering = ['sort_order', 'created_at']
+
+    def __str__(self):
+        return f'{self.year} - {self.title}'
+
+
+class ArticleLike(models.Model):
+    """文章点赞记录表"""
+    article = models.ForeignKey(Article, on_delete=models.CASCADE, related_name='likes', verbose_name='文章')
+    ip_address = models.CharField(max_length=50, blank=True, null=True, verbose_name='IP地址')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='点赞时间')
+
+    class Meta:
+        db_table = 'article_like'
+        verbose_name = '文章点赞'
+        verbose_name_plural = '文章点赞'
+
+    def __str__(self):
+        return f'{self.article_id} - {self.ip_address}'

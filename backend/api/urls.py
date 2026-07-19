@@ -19,4 +19,11 @@ urlpatterns = [
     path('contacts/stats/', views.ContactViewSet.as_view({'get': 'stats'}), name='contact-stats'),
     # 产品
     path('products/', views.ProductViewSet.as_view({'get': 'list'}), name='product-list'),
+    # 资质证书
+    path('certificates/', views.CertificateViewSet.as_view({'get': 'list'}), name='certificate-list'),
+    # 企业历程
+    path('milestones/', views.MilestoneViewSet.as_view({'get': 'list'}), name='milestone-list'),
+    # 文章点赞
+    path('article-likes/', views.ArticleLikeViewSet.as_view({'post': 'create'}), name='article-like-create'),
+    path('article-likes/count/', views.ArticleLikeViewSet.as_view({'get': 'count'}), name='article-like-count'),
 ]

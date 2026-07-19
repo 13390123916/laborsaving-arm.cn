@@ -1,6 +1,11 @@
 <template>
   <div class="contact-page">
     <div class="container">
+      <!-- 面包屑导航 -->
+      <nav class="breadcrumb">
+        <router-link to="/">首页</router-link> / <span>联系我们</span>
+      </nav>
+
       <h1 class="page-title">联系我们</h1>
       <p class="page-sub text-center text-light">填写下方表单，专业工程师将在24小时内与您联系</p>
 
@@ -130,6 +135,8 @@ onMounted(async () => {
 
 <style scoped>
 .page-title { text-align: center; font-size: 2rem; margin: 32px 0 8px; }
+.breadcrumb { padding: 16px 0 8px; font-size: 0.85rem; color: var(--text-light); }
+.breadcrumb a { color: var(--text-light); }
 .page-sub { margin-bottom: 32px; }
 .contact-wrap { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 900px; margin: 0 auto; }
 .contact-info h3 { margin-bottom: 16px; color: var(--primary); }

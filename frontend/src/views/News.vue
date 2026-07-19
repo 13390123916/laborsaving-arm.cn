@@ -1,6 +1,11 @@
 <template>
   <div class="news">
     <div class="container">
+      <!-- 面包屑导航 -->
+      <nav class="breadcrumb">
+        <router-link to="/">首页</router-link> / <span>资讯中心</span>
+      </nav>
+
       <h1 class="page-title">资讯中心</h1>
 
       <!-- 分类筛选 -->
@@ -13,8 +18,10 @@
       <!-- 文章列表 -->
       <div class="article-list" v-if="articles.length">
         <article class="article-item card" v-for="a in articles" :key="a.id">
-          <div class="article-cover" v-if="a.cover">
-            <img :src="a.cover" :alt="a.title" />
+          <div class="article-cover">
+            <!-- 封面图：有URL显示图片，无则显示分类占位 -->
+            <img v-if="a.cover" :src="a.cover" :alt="a.title" />
+            <div v-else class="cover-placeholder">{{ a.category.slice(0, 2) }}</div>
           </div>
           <div class="article-body">
             <div class="article-meta">
@@ -64,7 +71,9 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.page-title { text-align: center; font-size: 2rem; margin: 32px 0; }
+.breadcrumb { padding: 16px 0 8px; font-size: 0.85rem; color: var(--text-light); }
+.breadcrumb a { color: var(--text-light); }
+.page-title { text-align: center; font-size: 2rem; margin: 16px 0 32px; }
 .category-tabs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 28px; }
 .tab { padding: 8px 18px; border: 1px solid var(--border); background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.9rem; }
 .tab.active { background: var(--primary); color: #fff; border-color: var(--primary); }
@@ -72,6 +81,7 @@ onMounted(async () => {
 .article-item { display: flex; gap: 16px; margin-bottom: 20px; align-items: flex-start; }
 .article-cover { width: 200px; flex-shrink: 0; }
 .article-cover img { width: 200px; height: 140px; object-fit: cover; border-radius: 6px; }
+.cover-placeholder { width: 200px; height: 140px; background: var(--primary); color: #fff; display: flex; align-items: center; justify-content: center; font-size: 2rem; font-weight: 700; border-radius: 6px; }
 .article-body { flex: 1; }
 .article-meta { display: flex; gap: 12px; align-items: center; font-size: 0.85rem; margin-bottom: 8px; }
 .cat-tag { background: var(--bg-gray); color: var(--primary); padding: 2px 10px; border-radius: 4px; }
@@ -83,7 +93,7 @@ onMounted(async () => {
 
 @media (max-width: 767px) {
   .article-item { flex-direction: column; }
-  .article-cover, .article-cover img { width: 100%; }
-  .article-cover img { height: 180px; }
+  .article-cover, .article-cover img, .cover-placeholder { width: 100%; }
+  .article-cover img, .cover-placeholder { height: 180px; }
 }
 </style>

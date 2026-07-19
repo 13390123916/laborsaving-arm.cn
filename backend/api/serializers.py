@@ -2,7 +2,7 @@
 序列化器 - 数据序列化与验证
 """
 from rest_framework import serializers
-from .models import Article, Faq, Contact, SiteConfig, Product
+from .models import Article, Faq, Contact, SiteConfig, Product, Certificate, Milestone, ArticleLike
 
 
 class SiteConfigSerializer(serializers.ModelSerializer):
@@ -55,3 +55,25 @@ class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
         fields = '__all__'
+
+
+class CertificateSerializer(serializers.ModelSerializer):
+    """资质证书序列化器"""
+    class Meta:
+        model = Certificate
+        fields = '__all__'
+
+
+class MilestoneSerializer(serializers.ModelSerializer):
+    """企业历程序列化器"""
+    class Meta:
+        model = Milestone
+        fields = '__all__'
+
+
+class ArticleLikeSerializer(serializers.ModelSerializer):
+    """文章点赞序列化器"""
+    class Meta:
+        model = ArticleLike
+        fields = ['id', 'article', 'ip_address', 'created_at']
+        read_only_fields = ['id', 'ip_address', 'created_at']

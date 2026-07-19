@@ -44,3 +44,16 @@ export const contactApi = {
 export const productApi = {
   list: () => api.get('/products/')
 }
+
+export const certificateApi = {
+  list: () => api.get('/certificates/')
+}
+
+export const milestoneApi = {
+  list: () => api.get('/milestones/')
+}
+
+export const likeApi = {
+  submit: (data) => api.post('/article-likes/', data),
+  count: (params) => api.get('/article-likes/count/', { params })
+}

@@ -2,7 +2,7 @@
 初始化数据脚本 - 创建站点配置、FAQ、产品、示例资讯
 运行方式：python3.11 manage.py shell < init_data.py
 """
-from api.models import SiteConfig, Faq, Article, Product
+from api.models import SiteConfig, Faq, Article, Product, Certificate, Milestone
 
 # ===== 站点配置 =====
 config, created = SiteConfig.objects.get_or_create(
@@ -157,59 +157,32 @@ for p in product_data:
     Product.objects.get_or_create(name=p['name'], defaults=p)
 print(f"产品数据: 共 {len(product_data)} 条")
 
-# ===== 示例资讯（6-8篇，覆盖多分类）=====
-news_data = [
-    {
-        'title': 'LABOR-SAVING 发布新一代重载气动助力机械臂',
-        'category': '公司新闻',
-        'summary': '新机型最大负载提升至800kg，采用轻量化铝合金臂体，操作更灵活。',
-        'content': '近日，LABOR-SAVING 智能装备发布全新一代重载气动助力机械臂系列，最大负载能力提升至800kg，臂体采用航空级铝合金材料，自重减轻20%的同时刚性更强。\n\n新机型配备智能平衡系统，响应速度提升30%，并集成物联网模块，支持远程状态监控和故障预警。已在多家汽车主机厂投入使用，获得客户一致好评。',
-        'is_top': True,
-    },
-    {
-        'title': '气动助力机械臂在汽车焊装线的应用实践',
-        'category': '行业资讯',
-        'summary': '通过助力臂实现车门、总成件的省力搬运与精准定位，提升焊装效率。',
-        'content': '在汽车焊装车间，车门、侧围等大型总成件搬运一直是痛点。传统人工搬运劳动强度大、定位精度低。\n\n引入气动助力机械臂后，操作工可轻松将工件送至夹具位置，配合视觉定位实现毫米级对位，单工位节拍缩短40%，工伤率显著下降。本文结合实际案例解析部署要点。',
-    },
-    {
-        'title': '如何评估工厂是否需要引入助力机械臂',
-        'category': '技术干货',
-        'summary': '从搬运重量、频次、工伤风险三个维度判断助力的必要性。',
-        'content': '企业在考虑自动化升级时，常困惑于是否需引入助力设备。建议从三方面评估：\n\n1. 单件重量超过15kg且每日搬运频次高；\n2. 存在腰肌劳损、砸伤等职业健康风险；\n3. 招工难、人工成本逐年上升。\n\n满足两项以上即值得投资，通常回报期在一年以内。',
-    },
-    {
-        'title': '零重力平衡臂在家电装配线的应用',
-        'category': '行业应用',
-        'summary': '为某大型家电企业部署12台平衡臂，实现洗衣机内筒装配工位效率提升35%。',
-        'content': '某知名家电企业在洗衣机内筒装配线上引入LABOR-SAVING零重力平衡臂系统，单台设备日均搬运200次以上。\n\n操作人员反馈：装配精度显著提升，劳动强度大幅下降。该企业已在其三个生产基地推广部署，累计安装超过50台设备，年节省人力成本数百万元。',
-    },
-    {
-        'title': '气动助力设备日常维护保养指南',
-        'category': '技术干货',
-        'summary': '掌握五点日常点检方法，有效延长设备使用寿命，降低故障率。',
-        'content': '正确的日常维护是保障助力机械臂长期稳定运行的关键。建议每日开工前进行以下点检：\n\n1. 检查气源压力是否在0.6-0.8MPa范围内；\n2. 确认管路接头无漏气；\n3. 测试制动系统是否可靠；\n4. 检查吊具和夹具紧固件；\n5. 清洁滑轨及导向机构。\n\n每月进行润滑油加注，每半年更换空气过滤器，可大幅降低非计划停机时间。',
-    },
-    {
-        'title': '2025年工业自动化趋势：助力设备智能化升级',
-        'category': '行业资讯',
-        'summary': '助力设备接入工业物联网，实现预测性维护与效率优化。',
-        'content': '随着工业4.0推进，传统气动助力设备正迎来智能化升级浪潮。新一代设备集成传感器、物联模块与边缘计算能力。\n\nLABOR-SAVING 推出的智能助力系统支持实时负载监测、能耗分析与故障预警，数据可直接上传至工厂MES系统，帮助企业实现精准产能规划与设备全生命周期管理。',
-    },
+# ===== 资质证书数据 =====
+certificate_data = [
+    {'name': '高新技术企业认证', 'image_url': '', 'description': '国家高新技术企业认定证书', 'sort_order': 0},
+    {'name': 'ISO9001质量管理体系', 'image_url': '', 'description': 'ISO9001:2015质量管理体系认证', 'sort_order': 1},
+    {'name': 'CE安全认证', 'image_url': '', 'description': '欧盟CE安全认证', 'sort_order': 2},
+    {'name': '实用新型专利证书', 'image_url': '', 'description': '多项气动助力设备实用新型专利', 'sort_order': 3},
+    {'name': 'AAA级信用企业', 'image_url': '', 'description': '企业信用评价AAA级信用企业', 'sort_order': 4},
 ]
 
-for i, n in enumerate(news_data):
-    Article.objects.get_or_create(
-        title=n['title'],
-        defaults={
-            **n,
-            'seo_title': n['title'],
-            'seo_keywords': '气动助力机械臂,工业自动化,应用案例',
-            'seo_description': n['summary'],
-            'author': 'LABOR-SAVING 编辑部',
-            'sort_order': i,
-        }
-    )
-print(f"资讯数据: 共 {len(news_data)} 篇")
+for c in certificate_data:
+    Certificate.objects.get_or_create(name=c['name'], defaults=c)
+print(f"资质证书数据: 共 {len(certificate_data)} 项")
+
+# ===== 企业历程数据 =====
+milestone_data = [
+    {'year': '2015', 'title': '公司成立', 'description': 'LABOR-SAVING 智能装备有限公司在山东青岛正式成立。', 'sort_order': 0},
+    {'year': '2016', 'title': '首款产品下线', 'description': '首款气动助力机械臂量产下线，通过CE安全认证。', 'sort_order': 1},
+    {'year': '2018', 'title': '通过ISO9001认证', 'description': '建立标准化质量体系，产品线扩展至5大系列。', 'sort_order': 2},
+    {'year': '2020', 'title': '服务客户突破300家', 'description': '累计服务客户超过300家，年销售额突破8000万元。', 'sort_order': 3},
+    {'year': '2022', 'title': '新厂房投入使用', 'description': '15000㎡新厂房建成投产，产能提升200%。', 'sort_order': 4},
+    {'year': '2023', 'title': '获高新技术企业认定', 'description': '通过国家高新技术企业认定。', 'sort_order': 5},
+    {'year': '2024', 'title': '发布智能助力系统', 'description': '推出集成物联网模块的智能气动助力系统。', 'sort_order': 6},
+]
+
+for m in milestone_data:
+    Milestone.objects.get_or_create(year=m['year'], title=m['title'], defaults=m)
+print(f"企业历程数据: 共 {len(milestone_data)} 项")
 
 print("\n初始化完成！")

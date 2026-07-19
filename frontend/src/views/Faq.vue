@@ -1,6 +1,11 @@
 <template>
   <div class="faq-page">
     <div class="container">
+      <!-- 面包屑导航 -->
+      <nav class="breadcrumb">
+        <router-link to="/">首页</router-link> / <span>常见问题</span>
+      </nav>
+
       <h1 class="page-title">常见问题</h1>
       <p class="page-sub text-center text-light">汇总气动助力机械臂采购高频疑问，助您快速决策</p>
 
@@ -83,6 +88,8 @@ onMounted(() => loadFaqs())
 
 <style scoped>
 .page-title { text-align: center; font-size: 2rem; margin: 32px 0 8px; }
+.breadcrumb { padding: 16px 0 8px; font-size: 0.85rem; color: var(--text-light); }
+.breadcrumb a { color: var(--text-light); }
 .page-sub { margin-bottom: 28px; }
 .cat-tabs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-bottom: 24px; }
 .tab { padding: 8px 18px; border: 1px solid var(--border); background: #fff; border-radius: 20px; cursor: pointer; font-size: 0.9rem; }

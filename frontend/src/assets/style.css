@@ -129,3 +129,19 @@ img {
   .card { padding: 16px; }
   .btn { padding: 10px 20px; font-size: 0.9rem; }
 }
+
+/* 骨架屏动画 */
+@keyframes shimmer {
+  0% { background-position: -200px 0; }
+  100% { background-position: calc(200px + 100%) 0; }
+}
+.skeleton {
+  background: linear-gradient(90deg, var(--bg-gray) 25%, #e8e8e8 50%, var(--bg-gray) 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 4px;
+}
+.skeleton-text { height: 16px; margin-bottom: 8px; width: 100%; }
+.skeleton-title { height: 24px; margin-bottom: 12px; width: 60%; }
+.skeleton-image { height: 160px; margin-bottom: 12px; }
+.skeleton-card { height: 120px; margin-bottom: 16px; }
