@@ -17,17 +17,17 @@ config, created = SiteConfig.objects.get_or_create(
         'founded_year': 2015,
         'company_scale': '员工100-300人，厂房面积15000㎡',
         'qualifications': '高新技术企业认证、ISO9001质量管理体系认证、CE认证、多项实用新型专利',
-        'office_address': '辽宁省沈阳市浑南区智能制造产业园',
+        'office_address': '辽宁省沈阳市浑南区文溯街19-1号',
         'service_scope': '全国及海外工业自动化市场，提供售前咨询、方案设计、安装调试、售后维护全流程服务',
         'contact_phone': '400-888-xxxx',
         'contact_email': 'sales@laborsaving-arm.cn',
         'contact_qq': '800xxxxxx',
-        # 地理位置（本地SEO / GEO 结构化数据 - 沈阳坐标）
-        'latitude': 41.805700,
-        'longitude': 123.431500,
+        # 地理位置（本地SEO / GEO 结构化数据 - 沈阳浑南文溯街坐标）
+        'latitude': 41.736500,
+        'longitude': 123.492000,
         'address_region': '辽宁省',
         'address_locality': '沈阳市',
-        'postal_code': '110000',
+        'postal_code': '110179',
         # SEO 验证与统计代码（上线前替换为真实值）
         # 百度站长验证: 从百度站长平台获取
         'baidu_verify': 'code-labor-saving-baidu-verify',
