@@ -19,8 +19,8 @@
       <div class="article-list" v-if="articles.length">
         <article class="article-item card" v-for="a in articles" :key="a.id">
           <div class="article-cover">
-            <!-- 封面图：有URL显示图片，无则显示分类占位 -->
-            <img v-if="a.cover" :src="a.cover" :alt="a.title" />
+            <!-- 封面图：优先媒体库上传图，其次旧 URL，无则分类占位 -->
+            <img v-if="a.cover_image_url || a.cover" :src="a.cover_image_url || a.cover" :alt="a.title" />
             <div v-else class="cover-placeholder">{{ a.category.slice(0, 2) }}</div>
           </div>
           <div class="article-body">
@@ -28,9 +28,9 @@
               <span class="cat-tag">{{ a.category }}</span>
               <span class="text-light">{{ formatDate(a.created_at) }}</span>
             </div>
-            <h3><router-link :to="`/news/${a.id}`">{{ a.title }}</router-link></h3>
+            <h3><router-link :to="`/news/${a.slug || a.id}`">{{ a.title }}</router-link></h3>
             <p class="text-light">{{ a.summary }}</p>
-            <router-link :to="`/news/${a.id}`" class="read-more">阅读全文 →</router-link>
+            <router-link :to="`/news/${a.slug || a.id}`" class="read-more">阅读全文 →</router-link>
           </div>
         </article>
       </div>

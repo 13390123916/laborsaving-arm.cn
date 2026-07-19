@@ -67,8 +67,10 @@ GET /api/articles/?page=1&page_size=10&category=行业资讯
 ### 文章详情
 ```
 GET /api/articles/{id}/
+GET /api/articles/{slug}/        # 支持语义化 URL 别名（slug），未设置 slug 时回退数字 ID
 ```
-> 访问时浏览量自动 +1
+> 访问时浏览量自动 +1；列表与详情均返回 `cover_image_url`（媒体库封面，优先于旧 `cover` 字段）。
+> 文章内容支持富文本 HTML（含图文混排），前端以 `v-html` 渲染。
 
 ### 文章分类列表
 ```
@@ -167,11 +169,59 @@ GET /api/products/
 
 ---
 
-## 七、错误码
+## 七、媒体图库接口
+
+| 路径 | 方法 | 权限 | 说明 |
+|------|------|------|------|
+| `/api/media/` | GET | 公开 | 媒体列表（可按 `?type=image` 筛选） |
+| `/api/media/` | POST | API 密钥（write/admin） | 上传文件（multipart：`file`、`title`、`uploaded_by`） |
+| `/api/media/{id}/` | DELETE | API 密钥（admin） | 删除媒体及物理文件 |
+
+**上传响应示例：**
+```json
+{ "code": 200, "message": "上传成功",
+  "data": { "id": 1, "title": "产品实拍", "url": "/media/uploads/2026/07/xxx.jpg", "media_type": "image" } }
+```
+
+---
+
+## 八、安全与审计接口（需 admin 密钥）
+
+| 路径 | 方法 | 说明 |
+|------|------|------|
+| `/api/login-logs/` | GET | 登录审计日志（支持 `?action=login\|logout\|failed` 筛选、分页） |
+| `/api/ip-rules/` | GET | IP 黑白名单列表 |
+| `/api/ip-rules/` | POST | 新增规则（`ip_address`、`rule_type=allow\|deny`、`scope=all\|admin\|api`、`note`） |
+| `/api/ip-rules/{id}/` | DELETE / PATCH | 删除 / 启用停用规则 |
+
+> 后台 `/admin/` 登录失败 5 次/15 分钟将自动临时锁定该 IP；IP 黑名单命中即拦截，白名单模式下仅放行列表内 IP。
+
+---
+
+## 九、API 密钥管理接口（需 admin 密钥）
+
+| 路径 | 方法 | 说明 |
+|------|------|------|
+| `/api/api-keys/` | GET | 密钥列表（不含明文与哈希） |
+| `/api/api-keys/` | POST | 创建密钥（`name`、`scopes=read\|write\|admin`），返回一次性明文 `plain_key` |
+| `/api/api-keys/{id}/` | DELETE / PATCH | 删除 / 启用停用密钥 |
+
+**密钥使用方式（自研 Token，无第三方依赖）：**
+```
+Authorization: Bearer <prefix>.<secret>
+# 或查询参数兜底：?api_key=<prefix>.<secret>
+```
+> 首个密钥请在 Django Admin「API密钥管理」中创建（明文仅显示一次）；后续可在 Admin 或通过上述接口管理。
+
+---
+
+## 十、错误码
 
 | code | 说明 |
 |------|------|
 | 200 | 成功 |
 | 400 | 参数错误 / 提交失败 |
+| 401 / 403 | 未携带有效 API 密钥 / 权限不足 |
 | 404 | 资源不存在 |
+| 429 | 请求过于频繁（表单/点赞接口限流） |
 | 500 | 服务器错误 |

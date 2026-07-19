@@ -2,8 +2,10 @@
 from django.contrib import admin
 from django.urls import path, include, re_path
 from django.conf import settings
+from django.conf.urls.static import static
 from django.views.generic import TemplateView
 from django.http import HttpResponse, Http404
+from django.views.static import serve
 import os
 
 urlpatterns = [
@@ -13,6 +15,10 @@ urlpatterns = [
     # SEO 相关路由（llms.txt、sitemap、schema 等）
     path('', include('api.seo_urls')),
 ]
+
+# 开发环境（DEBUG）直接由 Django 提供媒体文件服务
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 # ===== 生产环境 SPA 兜底 =====
 # 当 SERVE_SPA=True 时，将未匹配的路径指向 Vue 构建产物
@@ -47,7 +53,9 @@ if getattr(settings, 'SERVE_SPA', False):
         return HttpResponse('SPA not built. Run `pnpm build` in frontend/.', status=503)
 
     urlpatterns += [
+        # 媒体文件（上传的图片/文档/视频）由 Django 提供静态服务
+        re_path(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}, name='media-serve'),
         # 静态资产 /assets/ 由 Django 自动服务（STATICFILES_DIRS 已指向 dist）
-        # 所有非 /api、/admin、/static 路径 → 按路由快照分发
+        # 所有非 /api、/admin、/static、/media 路径 → 按路由快照分发
         re_path(r'^(?!api/|admin/|static/|media/).*$', spa_fallback, name='spa-fallback'),
     ]

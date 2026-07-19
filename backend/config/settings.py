@@ -11,12 +11,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # 项目仓库根目录（含 frontend/）
 PROJECT_ROOT = BASE_DIR.parent
 
-SECRET_KEY = 'labor_saving_arm_2024_django_secret_key_prod_safe_change_me'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'labor_saving_arm_2024_django_secret_key_prod_safe_change_me')
 
-DEBUG = True
+# 调试模式：默认开启（开发），生产环境务必设为 False（环境变量 DEBUG=False）
+DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 
-# 允许访问的主机，上线后需改为实际域名
-ALLOWED_HOSTS = ['*']
+# 允许访问的主机，上线后通过环境变量 ALLOWED_HOSTS 限定为实际域名（逗号分隔）
+ALLOWED_HOSTS_ENV = os.environ.get('ALLOWED_HOSTS')
+ALLOWED_HOSTS = ALLOWED_HOSTS_ENV.split(',') if ALLOWED_HOSTS_ENV else ['*']
 
 # ===== 生产环境 SPA 托管配置 =====
 # 设置 SERVE_SPA=True 环境变量后，Django 同时托管 Vue 构建产物
@@ -37,12 +39,13 @@ INSTALLED_APPS = [
     'rest_framework',
     'corsheaders',
     # 本地应用
-    'api',
+    'api.apps.ApiConfig',
 ]
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+    'api.middleware.SecurityMiddleware',  # 后台防爆破 + IP 黑白名单拦截
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -102,6 +105,11 @@ REST_FRAMEWORK = {
     'DEFAULT_RENDERER_CLASSES': [
         'rest_framework.renderers.JSONRenderer',
     ],
+    # 限流速率（仅公开写接口——联系表单/点赞——在对应视图中按需启用 AnonRateThrottle）
+    'DEFAULT_THROTTLE_RATES': {
+        'anon': '10/minute',
+        'user': '100/minute',
+    },
 }
 
 # ===== CORS 跨域配置（前后端分离）=====
@@ -130,3 +138,23 @@ MEDIA_ROOT = BASE_DIR / 'media'
 
 # 默认自动字段
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# ===== 生产环境安全头（环境驱动，开发默认关闭）=====
+# 上线部署时在环境变量中开启：SECURE_SSL_REDIRECT=True SECURE_COOKIES=True HSTS_SECONDS=31536000
+SECURE_SSL_REDIRECT = os.environ.get('SECURE_SSL_REDIRECT') == 'True'
+SECURE_HSTS_SECONDS = int(os.environ.get('HSTS_SECONDS', '0'))
+SECURE_HSTS_INCLUDE_SUBDOMAINS = SECURE_HSTS_SECONDS > 0
+SECURE_HSTS_PRELOAD = SECURE_HSTS_SECONDS > 0
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = 'DENY'
+# Cookie 安全（仅 HTTPS 传输）：生产设为 True
+SESSION_COOKIE_SECURE = os.environ.get('SECURE_COOKIES') == 'True'
+CSRF_COOKIE_SECURE = os.environ.get('SECURE_COOKIES') == 'True'
+
+# ===== 缓存（限流/防爆破计数使用，默认进程内内存缓存）=====
+# 多进程/多机部署时建议改为 redis 等共享缓存
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+    }
+}

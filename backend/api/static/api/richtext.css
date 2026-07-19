@@ -1,0 +1,12 @@
+/* 富文本工具栏样式 */
+.rt-toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; }
+.rt-btn {
+  padding: 4px 12px;
+  border: 1px solid #d0d5dd;
+  background: #f9fafb;
+  color: #344054;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 13px;
+}
+.rt-btn:hover { background: #eef2f6; border-color: #c0c5cc; }

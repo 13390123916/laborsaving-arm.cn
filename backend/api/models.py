@@ -4,6 +4,7 @@
 设计原则：字段命名规范、预留扩展字段、适配 Navicat Premium Lite 可视化管理
 """
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import AbstractUser
 
 
@@ -101,8 +102,14 @@ class Article(models.Model):
     seo_description = models.TextField(blank=True, null=True, verbose_name='SEO描述')
 
     category = models.CharField(max_length=50, default='行业资讯', verbose_name='文章分类')
-    cover = models.CharField(max_length=255, blank=True, null=True, verbose_name='封面图')
+    # URL 别名（语义化 SEO 友好链接，如 /news/qizhong-xitong，默认空则回退数字 ID）
+    slug = models.SlugField(max_length=200, blank=True, null=True, unique=True, verbose_name='URL别名')
+    cover = models.CharField(max_length=255, blank=True, null=True, verbose_name='封面图URL')
+    # 封面图（关联媒体库上传文件，优先于 cover 字段）
+    cover_image = models.ForeignKey('Media', on_delete=models.SET_NULL, blank=True, null=True,
+                                     related_name='article_covers', verbose_name='封面图(媒体库)')
     summary = models.TextField(blank=True, null=True, verbose_name='文章摘要')
+    # 文章内容（支持 HTML 富文本，后台可排版图文）
     content = models.TextField(verbose_name='文章内容')
     author = models.CharField(max_length=50, default='管理员', verbose_name='作者')
     views = models.IntegerField(default=0, verbose_name='浏览量')
@@ -202,6 +209,9 @@ class Certificate(models.Model):
     """资质证书表 - 后台可上传、排序展示"""
     name = models.CharField(max_length=100, verbose_name='证书名称')
     image_url = models.CharField(max_length=500, blank=True, null=True, verbose_name='证书图片URL')
+    # 证书图片（关联媒体库上传文件，优先于 image_url 字段）
+    image = models.ForeignKey('Media', on_delete=models.SET_NULL, blank=True, null=True,
+                              related_name='certificates', verbose_name='证书图片(媒体库)')
     description = models.CharField(max_length=255, blank=True, null=True, verbose_name='证书说明')
     sort_order = models.IntegerField(default=0, verbose_name='排序')
     is_active = models.BooleanField(default=True, verbose_name='是否显示')
@@ -249,3 +259,123 @@ class ArticleLike(models.Model):
 
     def __str__(self):
         return f'{self.article_id} - {self.ip_address}'
+
+
+class Media(models.Model):
+    """媒体图库 - 图片/文档/视频统一上传与管理
+    采用 FileField（不依赖 Pillow），覆盖产品实拍图、证书扫描件、参数册 PDF、车间视频等
+    """
+    MEDIA_TYPE_CHOICES = (
+        ('image', '图片'),
+        ('document', '文档'),
+        ('video', '视频'),
+    )
+
+    title = models.CharField(max_length=200, verbose_name='文件标题')
+    file = models.FileField(upload_to='uploads/%Y/%m/', verbose_name='文件')
+    media_type = models.CharField(max_length=20, choices=MEDIA_TYPE_CHOICES, default='image', verbose_name='媒体类型')
+    file_size = models.IntegerField(default=0, verbose_name='文件大小(字节)')
+    mime_type = models.CharField(max_length=100, blank=True, null=True, verbose_name='MIME类型')
+    uploaded_by = models.CharField(max_length=50, blank=True, null=True, verbose_name='上传者')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='上传时间')
+
+    # 预留扩展字段
+    ext_field1 = models.CharField(max_length=100, blank=True, null=True, verbose_name='扩展字段1')
+
+    class Meta:
+        db_table = 'media'
+        verbose_name = '媒体文件'
+        verbose_name_plural = '媒体图库'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def url(self):
+        """对外访问地址（MEDIA_URL + 相对路径）"""
+        return settings.MEDIA_URL + self.file.name
+
+
+class LoginLog(models.Model):
+    """登录日志 - 安全审计（记录后台登录/登出/失败事件）"""
+    ACTION_CHOICES = (
+        ('login', '登录成功'),
+        ('logout', '退出登录'),
+        ('failed', '登录失败'),
+    )
+
+    username = models.CharField(max_length=150, verbose_name='用户名')
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, blank=True, null=True, verbose_name='关联用户')
+    action = models.CharField(max_length=20, choices=ACTION_CHOICES, verbose_name='动作')
+    ip_address = models.CharField(max_length=50, blank=True, null=True, verbose_name='IP地址')
+    user_agent = models.TextField(blank=True, null=True, verbose_name='浏览器标识')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='时间')
+
+    class Meta:
+        db_table = 'login_log'
+        verbose_name = '登录日志'
+        verbose_name_plural = '登录日志'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.username} - {self.get_action_display()} - {self.ip_address}'
+
+
+class ApiKey(models.Model):
+    """API 密钥管理 - 对外接口授权（自研 Token，无第三方依赖）"""
+    SCOPE_CHOICES = (
+        ('read', '只读'),
+        ('write', '读写'),
+        ('admin', '管理'),
+    )
+
+    name = models.CharField(max_length=100, verbose_name='密钥名称')
+    key_prefix = models.CharField(max_length=12, verbose_name='密钥前缀')
+    key_hash = models.CharField(max_length=128, verbose_name='密钥哈希')
+    scopes = models.CharField(max_length=20, choices=SCOPE_CHOICES, default='read', verbose_name='权限范围')
+    is_active = models.BooleanField(default=True, verbose_name='是否启用')
+    last_used_at = models.DateTimeField(blank=True, null=True, verbose_name='最后使用时间')
+    created_by = models.CharField(max_length=50, blank=True, null=True, verbose_name='创建者')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+
+    # 预留扩展字段
+    ext_field1 = models.CharField(max_length=100, blank=True, null=True, verbose_name='扩展字段1')
+
+    class Meta:
+        db_table = 'api_key'
+        verbose_name = 'API密钥'
+        verbose_name_plural = 'API密钥管理'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.name} ({self.key_prefix}••••)'
+
+
+class IpRule(models.Model):
+    """IP 规则 - 黑白名单管理（防护后台爆破/接口滥用）"""
+    RULE_TYPE_CHOICES = (
+        ('allow', '白名单'),
+        ('deny', '黑名单'),
+    )
+    SCOPE_CHOICES = (
+        ('all', '全站'),
+        ('admin', '后台管理'),
+        ('api', 'API接口'),
+    )
+
+    ip_address = models.CharField(max_length=50, verbose_name='IP地址/CIDR')
+    rule_type = models.CharField(max_length=10, choices=RULE_TYPE_CHOICES, default='deny', verbose_name='规则类型')
+    scope = models.CharField(max_length=10, choices=SCOPE_CHOICES, default='all', verbose_name='生效范围')
+    note = models.CharField(max_length=200, blank=True, null=True, verbose_name='备注')
+    is_active = models.BooleanField(default=True, verbose_name='是否启用')
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name='创建时间')
+
+    class Meta:
+        db_table = 'ip_rule'
+        verbose_name = 'IP规则'
+        verbose_name_plural = 'IP黑白名单'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f'{self.get_rule_type_display()} {self.ip_address} ({self.get_scope_display()})'

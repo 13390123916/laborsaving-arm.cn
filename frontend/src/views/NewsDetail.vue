@@ -19,18 +19,18 @@
       </div>
 
       <!-- 文章封面（如有） -->
-      <div class="detail-cover" v-if="article.cover">
-        <img :src="article.cover" :alt="article.title" />
+      <div class="detail-cover" v-if="article.cover_image_url || article.cover">
+        <img :src="article.cover_image_url || article.cover" :alt="article.title" />
       </div>
 
-      <!-- 文章内容 -->
+      <!-- 文章内容（支持富文本 HTML，含图片/排版） -->
       <div class="detail-content" v-html="formattedContent"></div>
 
       <!-- 相关推荐（同分类优先） -->
       <section class="section" v-if="relatedList.length">
         <h3 class="related-title">相关资讯</h3>
         <div class="related-list">
-          <router-link v-for="r in relatedList" :key="r.id" :to="`/news/${r.id}`" class="related-item">
+          <router-link v-for="r in relatedList" :key="r.id" :to="`/news/${r.slug || r.id}`" class="related-item">
             <span class="related-cat">{{ r.category }}</span>
             <span class="related-title-text">{{ r.title }}</span>
           </router-link>
@@ -64,8 +64,12 @@ const likeCount = ref(0)
 const { inject: injectArticleSchema } = useJsonLd('schema-article')
 
 const formattedContent = computed(() => {
-  if (!article.value?.content) return ''
-  return article.value.content
+  const c = article.value?.content
+  if (!c) return ''
+  const trimmed = c.trim()
+  // 含 HTML 标签则按富文本原样渲染（支持图文混排），否则按换行分段（兼容旧纯文本）
+  if (/<[a-z!][\s\S]*>/i.test(trimmed)) return trimmed
+  return trimmed
     .split('\n')
     .filter(p => p.trim())
     .map(p => `<p>${p}</p>`)
