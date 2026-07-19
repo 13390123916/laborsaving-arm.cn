@@ -1,0 +1,22 @@
+{
+  "project": "laborsaving-arm.cn",
+  "remote": "https://github.com/13390123916/laborsaving-arm.cn.git",
+  "baselines": [
+    {
+      "id": "bl-20260719T163903",
+      "ts": "20260719T163903",
+      "iso": "2026-07-19T16:39:05",
+      "commit": "8698c04",
+      "branch": "main",
+      "dirty_files": 0,
+      "sha256": "93156d9bd45bb4c0fb75614935321fe23123c943184cd5fe8d9ed27355b11147",
+      "size_bytes": 105325,
+      "desc": "init-baseline: 恢复GitHub main@8698c04 后建立首份全局基线",
+      "remote": "https://github.com/13390123916/laborsaving-arm.cn.git",
+      "parent": "",
+      "snapshot": "snapshots/baseline-20260719T163903.tar.gz"
+    }
+  ],
+  "updated": "2026-07-19T16:39:05",
+  "latest": "bl-20260719T163903"
+}
