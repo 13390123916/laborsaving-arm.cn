@@ -55,6 +55,13 @@ class SiteConfig(models.Model):
     contact_email = models.CharField(max_length=100, blank=True, null=True, verbose_name='联系邮箱')
     contact_qq = models.CharField(max_length=20, blank=True, null=True, verbose_name='联系QQ')
 
+    # 地理位置信息（本地SEO / GEO 结构化数据 - 适配百度地图、Google 地理收录、本地搜索）
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name='纬度')
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, blank=True, null=True, verbose_name='经度')
+    address_region = models.CharField(max_length=50, blank=True, null=True, verbose_name='所在省份')
+    address_locality = models.CharField(max_length=50, blank=True, null=True, verbose_name='所在城市/区')
+    postal_code = models.CharField(max_length=10, blank=True, null=True, verbose_name='邮政编码')
+
     # SEO 统计与验证代码
     baidu_verify = models.CharField(max_length=100, blank=True, null=True, verbose_name='百度验证代码')
     baidu_tongji = models.CharField(max_length=50, blank=True, null=True, verbose_name='百度统计ID')

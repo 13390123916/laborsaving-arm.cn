@@ -24,6 +24,8 @@ class SiteConfigAdmin(BaseAdminMixin, admin.ModelAdmin):
         ('基础信息', {'fields': ('site_name', 'site_title', 'site_keywords', 'site_description')}),
         ('企业实体信息', {'fields': ('company_name', 'company_intro', 'founded_year',
                                     'company_scale', 'qualifications', 'office_address',
+                                    'address_region', 'address_locality', 'postal_code',
+                                    'latitude', 'longitude',
                                     'service_scope', 'contact_phone', 'contact_email', 'contact_qq')}),
         ('SEO 统计验证', {'fields': ('baidu_verify', 'baidu_tongji', 'baidu_push_token',
                                     'qihu_verify', 'sogou_verify', 'google_verify',

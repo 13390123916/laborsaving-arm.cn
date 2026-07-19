@@ -47,9 +47,19 @@ export function useJsonLd(schemaId) {
  * 与后端 /schema/organization.json 对齐
  */
 export function buildOrganizationSchema(config) {
-  return {
+  // 地理位置（GEO 结构化数据核心：GeoCoordinates 经纬度）
+  const geo = (config.latitude != null && config.longitude != null)
+    ? {
+        '@type': 'GeoCoordinates',
+        latitude: Number(config.latitude),
+        longitude: Number(config.longitude)
+      }
+    : undefined
+
+  // 采用 LocalBusiness（Organization 子类型），兼顾企业信息与本地 SEO 地理收录
+  const schema = {
     '@context': 'https://schema.org',
-    '@type': 'Organization',
+    '@type': 'LocalBusiness',
     name: config.company_name || 'LABOR-SAVING 智能装备有限公司',
     url: 'https://laborsaving-arm.cn',
     description: config.company_intro || config.site_description || '',
@@ -57,15 +67,23 @@ export function buildOrganizationSchema(config) {
     address: {
       '@type': 'PostalAddress',
       streetAddress: config.office_address || '',
+      addressLocality: config.address_locality || '青岛市',
+      addressRegion: config.address_region || '山东省',
+      postalCode: config.postal_code || '',
       addressCountry: 'CN'
     },
-    contactPoint: {
+    areaServed: config.service_scope || '全国及海外工业自动化市场'
+  }
+  if (geo) schema.geo = geo
+  if (config.contact_phone || config.contact_email) {
+    schema.contactPoint = {
       '@type': 'ContactPoint',
       telephone: config.contact_phone || '',
       contactType: 'sales',
       email: config.contact_email || ''
     }
   }
+  return schema
 }
 
 /**
