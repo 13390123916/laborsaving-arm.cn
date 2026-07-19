@@ -96,28 +96,50 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.hero { background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%); color: #fff; padding: 80px 0; text-align: center; }
-.hero h1 { font-size: 2.5rem; margin-bottom: 16px; }
-.hero-sub { font-size: 1.1rem; opacity: 0.9; max-width: 600px; margin: 0 auto 28px; }
-.hero-actions .btn { margin: 0 8px; }
+/* Hero：深色工业基调 + 红色辉光，强对比 */
+.hero {
+  position: relative;
+  background:
+    radial-gradient(900px 420px at 72% -12%, rgba(240, 43, 35, 0.22), transparent 60%),
+    linear-gradient(160deg, #14171e 0%, #0e1014 72%);
+  color: var(--text);
+  padding: 88px 0;
+  text-align: center;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.hero h1 { font-size: 2.6rem; margin-bottom: 18px; color: #fff; letter-spacing: 0.5px; }
+.hero-sub { font-size: 1.1rem; color: var(--text-light); max-width: 620px; margin: 0 auto 30px; }
+.hero-actions { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
+/* 次要按钮（了解企业）转为幽灵态，主按钮（免费咨询）保持品牌红 */
+.hero-actions .btn:not(.btn-accent) {
+  background: transparent; color: var(--text);
+  border: 1px solid var(--border-strong); box-shadow: none;
+}
+.hero-actions .btn:not(.btn-accent):hover { border-color: var(--primary); background: var(--bg-elevated); }
 
-.product-icon { font-size: 2.5rem; margin-bottom: 12px; }
-.product-card h3 { margin-bottom: 8px; font-size: 1.2rem; }
+.product-icon { font-size: 2.6rem; margin-bottom: 12px; }
+.product-card { text-align: center; }
+.product-card:hover { transform: translateY(-3px); border-color: var(--primary); }
+.product-card h3 { margin-bottom: 8px; font-size: 1.2rem; color: var(--text); }
 
 .advantage { text-align: center; padding: 20px; }
-.advantage-num { font-size: 2rem; font-weight: 700; color: var(--accent); }
-.advantage h4 { margin: 8px 0; }
+.advantage-num { font-size: 2.1rem; font-weight: 800; color: var(--accent); font-variant-numeric: tabular-nums; }
+.advantage h4 { margin: 8px 0; color: var(--text); }
 
-.faq-preview { max-width: 800px; margin: 0 auto; }
+.faq-preview { max-width: 820px; margin: 0 auto; }
 .faq-item { padding: 16px 0; border-bottom: 1px solid var(--border); }
-.faq-item h4 { color: var(--primary); margin-bottom: 6px; }
+.faq-item:last-child { border-bottom: none; }
+.faq-item h4 { color: var(--text); margin-bottom: 6px; }
+.faq-item h4::before { content: 'Q '; color: var(--primary); font-weight: 700; }
 
-.cta-section { background: var(--bg-gray); padding: 48px 0; }
-.cta-section h2 { margin-bottom: 8px; }
+.cta-section { background: var(--bg-section); padding: 56px 0; border-top: 1px solid var(--border); }
+.cta-section h2 { margin-bottom: 8px; color: var(--text); }
 
-@media (max-width: 767px) {
-  .hero { padding: 48px 0; }
+@media (max-width: 679px) {
+  .hero { padding: 52px 0; }
   .hero h1 { font-size: 1.8rem; }
-  .hero-actions .btn { display: block; margin: 8px auto; max-width: 200px; }
+  .hero-actions { flex-direction: column; align-items: stretch; }
+  .hero-actions .btn { display: block; max-width: 240px; margin: 6px auto; }
 }
 </style>

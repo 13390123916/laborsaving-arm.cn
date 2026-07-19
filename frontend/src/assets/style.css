@@ -1,14 +1,36 @@
-/* 全局样式 - 简约商务风，移动端优先 */
+/* ==========================================================================
+   全局样式 - 深色工业风 + 红强调（国内官网 UI 改版 Phase 2）
+   设计原则：
+   1) 深色基调（近黑工业灰）提升专业感与对比度；
+   2) 品牌红 #f02b23 作为唯一强调色，用于 CTA / 激活态 / 关键标识；
+   3) 琥珀 #ffb020 仅用于大数字指标等工业感点缀；
+   4) 严格保持移动端优先、无横向溢出、加载轻量，不影响 SEO 管线与预渲染。
+   ========================================================================== */
 :root {
-  --primary: #1a5fb4;
-  --primary-dark: #143d75;
-  --accent: #f5a623;
-  --text: #333;
-  --text-light: #666;
-  --bg: #fff;
-  --bg-gray: #f7f8fa;
-  --border: #e5e7eb;
-  --max-width: 1200px;
+  /* —— 工业深色背景层级 —— */
+  --bg: #0e1014;            /* 页面底色（近黑工业灰） */
+  --bg-section: #12151b;    /* 区块底色 */
+  --bg-elevated: #181c24;   /* 卡片 / 浮层 */
+  --bg-input: #1c212b;      /* 输入框底色 */
+  /* —— 文本 —— */
+  --text: #e9ecf1;          /* 主文本（浅色） */
+  --text-light: #9aa4b2;    /* 次级文本（灰） */
+  /* —— 强调色 —— */
+  --primary: #f02b23;       /* 品牌红（唯一主强调） */
+  --primary-dark: #c81f18;  /* 深红（hover） */
+  --primary-soft: rgba(240, 43, 35, 0.12); /* 红浅底 */
+  --accent: #ffb020;        /* 工业琥珀（大数字/点缀） */
+  --success: #2ecc71;
+  --danger: #e74c3c;
+  /* —— 描边 / 阴影 —— */
+  --border: #272d39;
+  --border-strong: #353c4a;
+  --shadow: 0 8px 30px rgba(0, 0, 0, 0.38);
+  --shadow-sm: 0 2px 12px rgba(0, 0, 0, 0.28);
+  /* —— 布局 —— */
+  --max-width: 1180px;      /* 内容最大宽度（PC 宽屏适配） */
+  --radius: 10px;
+  --radius-sm: 6px;
 }
 
 * {
@@ -20,6 +42,7 @@
 html {
   font-size: 16px;
   -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -27,13 +50,16 @@ body {
     'Microsoft YaHei', sans-serif;
   color: var(--text);
   background: var(--bg);
-  line-height: 1.6;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
 }
 
 a {
   color: var(--primary);
   text-decoration: none;
+  transition: color 0.2s;
 }
+a:hover { color: var(--primary-dark); }
 
 img {
   max-width: 100%;
@@ -41,102 +67,163 @@ img {
   display: block;
 }
 
-/* 容器 - PC端居中限制宽度 */
+/* —— 容器：PC 居中限宽，移动端留白 —— */
 .container {
   width: 100%;
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 16px;
 }
+@media (min-width: 1020px) {
+  .container { padding: 0 24px; }
+}
 
-/* 按钮 */
+/* —— 按钮 —— */
 .btn {
   display: inline-block;
   padding: 12px 28px;
   background: var(--primary);
   color: #fff;
-  border: none;
-  border-radius: 4px;
+  border: 1px solid var(--primary);
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 1rem;
-  transition: background 0.2s;
+  font-weight: 600;
+  text-align: center;
+  transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 4px 14px rgba(240, 43, 35, 0.28);
 }
 .btn:hover {
   background: var(--primary-dark);
+  border-color: var(--primary-dark);
+  color: #fff;
+  transform: translateY(-1px);
 }
-.btn-accent {
-  background: var(--accent);
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+/* 次要按钮：描边幽灵态，用于"了解企业"等次级 CTA */
+.btn-ghost {
+  background: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  box-shadow: none;
 }
-.btn-accent:hover {
-  background: #e0950f;
+.btn-ghost:hover {
+  background: var(--bg-elevated);
+  border-color: var(--primary);
+  color: var(--text);
 }
+.btn-accent { background: var(--primary); border-color: var(--primary); }
 
-/* 卡片 */
+/* —— 卡片 —— */
 .card {
-  background: #fff;
+  background: var(--bg-elevated);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: var(--radius);
   padding: 24px;
-  transition: box-shadow 0.2s;
+  transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 .card:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-sm);
 }
 
-/* 段落标题 */
-.section {
-  padding: 48px 0;
-}
+/* —— 区块标题（红色短下划线强调） —— */
+.section { padding: 56px 0; }
 .section-title {
   font-size: 1.75rem;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 32px;
+  margin-bottom: 36px;
   position: relative;
+  color: var(--text);
 }
 .section-title::after {
   content: '';
   display: block;
-  width: 48px;
+  width: 52px;
   height: 3px;
-  background: var(--accent);
-  margin: 12px auto 0;
+  background: var(--primary);
+  margin: 14px auto 0;
+  border-radius: 2px;
 }
 
-/* 栅格系统 - 移动端单列，PC多列 */
+/* —— 栅格系统：移动端单列，平板/PC 多列 —— */
 .grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 20px;
 }
-@media (min-width: 768px) {
+@media (min-width: 680px) {
   .grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .grid-3 { grid-template-columns: repeat(3, 1fr); }
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (min-width: 1020px) {
   .grid-3 { grid-template-columns: repeat(3, 1fr); }
   .grid-4 { grid-template-columns: repeat(4, 1fr); }
 }
 
-/* 文本工具 */
+/* —— 文本工具 —— */
 .text-center { text-align: center; }
 .text-primary { color: var(--primary); }
 .text-light { color: var(--text-light); }
+.text-accent { color: var(--accent); }
 .mt-20 { margin-top: 20px; }
 .mb-20 { margin-bottom: 20px; }
 
-/* 移动端适配 - 小屏优化 */
-@media (max-width: 767px) {
-  .section { padding: 32px 0; }
-  .section-title { font-size: 1.4rem; margin-bottom: 24px; }
-  .card { padding: 16px; }
-  .btn { padding: 10px 20px; font-size: 0.9rem; }
+/* —— 特性带 / 红强调条（首页特性展示） —— */
+.feature-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  padding: 14px 0;
+}
+.feature-strip .feature-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--text-light);
+  font-size: 0.92rem;
+}
+.feature-strip .feature-item::before {
+  content: '';
+  width: 8px; height: 8px;
+  border-radius: 2px;
+  background: var(--primary);
+  flex-shrink: 0;
 }
 
-/* 骨架屏动画 */
+/* —— 勾选清单（优势/服务列表） —— */
+.check-list { list-style: none; }
+.check-list li {
+  position: relative;
+  padding-left: 28px;
+  margin-bottom: 10px;
+  color: var(--text);
+}
+.check-list li::before {
+  content: '✓';
+  position: absolute;
+  left: 0; top: 0;
+  color: var(--primary);
+  font-weight: 700;
+}
+
+/* —— 移动端适配 —— */
+@media (max-width: 679px) {
+  .section { padding: 36px 0; }
+  .section-title { font-size: 1.4rem; margin-bottom: 26px; }
+  .card { padding: 16px; }
+  .btn { padding: 10px 20px; font-size: 0.92rem; }
+}
+
+/* —— 骨架屏动画（保持 SEO 预渲染下首屏友好） —— */
 @keyframes shimmer {
   0% { background-position: -200px 0; }
   100% { background-position: calc(200px + 100%) 0; }
 }
 .skeleton {
-  background: linear-gradient(90deg, var(--bg-gray) 25%, #e8e8e8 50%, var(--bg-gray) 75%);
+  background: linear-gradient(90deg, var(--bg-section) 25%, #1f242e 50%, var(--bg-section) 75%);
   background-size: 200px 100%;
   animation: shimmer 1.5s ease-in-out infinite;
   border-radius: 4px;

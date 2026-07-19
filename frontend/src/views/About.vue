@@ -140,20 +140,22 @@ onUnmounted(() => {
 <style scoped>
 .breadcrumb { padding: 16px 0 8px; font-size: 0.85rem; color: var(--text-light); }
 .breadcrumb a { color: var(--text-light); }
-.page-title { text-align: center; font-size: 2rem; margin: 16px 0 32px; }
-.company-card { max-width: 900px; margin: 0 auto; }
+.breadcrumb a:hover { color: var(--primary); }
+.page-title { text-align: center; font-size: 2rem; margin: 16px 0 32px; color: var(--text); }
+.company-card { max-width: 900px; margin: 0 auto; border-color: var(--border-strong); }
 .company-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 8px; }
-.company-header h2 { font-size: 1.5rem; color: var(--primary); }
-.badge { background: var(--accent); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; }
+.company-header h2 { font-size: 1.5rem; color: #fff; }
+.badge { background: var(--primary); color: #fff; padding: 4px 12px; border-radius: 12px; font-size: 0.8rem; }
 .company-intro { line-height: 1.8; color: var(--text-light); margin-bottom: 20px; }
 .company-facts { display: grid; grid-template-columns: 1fr; gap: 12px; }
-.fact-item { display: flex; justify-content: space-between; padding: 12px; background: var(--bg-gray); border-radius: 6px; }
+.fact-item { display: flex; justify-content: space-between; padding: 12px 14px; background: var(--bg-section); border: 1px solid var(--border); border-radius: 6px; }
 .fact-label { color: var(--text-light); }
-.fact-value { font-weight: 600; }
+.fact-value { font-weight: 600; color: var(--text); }
 
 /* 资质证书 */
 .cert-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; max-width: 800px; margin: 0 auto; }
-.cert-card { text-align: center; padding: 20px; background: var(--bg-gray); border-radius: 8px; border: 1px solid var(--border); }
+.cert-card { text-align: center; padding: 20px; background: var(--bg-section); border-radius: 8px; border: 1px solid var(--border); transition: border-color 0.2s, transform 0.2s; }
+.cert-card:hover { border-color: var(--primary); transform: translateY(-2px); }
 .cert-icon { font-size: 2.5rem; margin-bottom: 8px; }
 .cert-card h4 { font-size: 0.95rem; color: var(--text); margin-bottom: 4px; }
 .cert-card p { font-size: 0.85rem; }
@@ -162,19 +164,19 @@ onUnmounted(() => {
 .timeline { position: relative; max-width: 700px; margin: 0 auto; padding-left: 30px; }
 .timeline::before { content: ''; position: absolute; left: 10px; top: 0; bottom: 0; width: 2px; background: var(--border); }
 .timeline-item { position: relative; margin-bottom: 24px; }
-.timeline-dot { position: absolute; left: -24px; top: 20px; width: 12px; height: 12px; border-radius: 50%; background: var(--border); border: 2px solid #fff; z-index: 1; }
-.timeline-dot.active { background: var(--accent); }
+.timeline-dot { position: absolute; left: -24px; top: 20px; width: 12px; height: 12px; border-radius: 50%; background: var(--border-strong); border: 2px solid var(--bg); z-index: 1; }
+.timeline-dot.active { background: var(--primary); border-color: var(--primary); }
 .timeline-content { padding: 16px 20px; }
 .timeline-year { display: inline-block; background: var(--primary); color: #fff; padding: 2px 10px; border-radius: 4px; font-size: 0.8rem; margin-bottom: 8px; }
-.timeline-content h4 { margin-bottom: 4px; font-size: 1rem; }
+.timeline-content h4 { margin-bottom: 4px; font-size: 1rem; color: var(--text); }
 
 /* 轮播 */
 .carousel-wrapper { max-width: 600px; margin: 0 auto; overflow: hidden; position: relative; }
 .carousel-track { display: flex; transition: transform 0.5s ease; }
 .carousel-slide { min-width: 100%; padding: 0 8px; }
-.scene-img { background: var(--bg-gray); height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem; border-radius: 8px; margin-bottom: 8px; }
+.scene-img { background: var(--bg-section); height: 200px; display: flex; align-items: center; justify-content: center; font-size: 4rem; border-radius: 8px; margin-bottom: 8px; border: 1px solid var(--border); }
 .carousel-dots { display: flex; justify-content: center; gap: 8px; margin-top: 12px; }
-.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border); cursor: pointer; transition: background 0.3s; }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-strong); cursor: pointer; transition: background 0.3s; }
 .dot.active { background: var(--primary); }
 
 .service-text { max-width: 800px; margin: 0 auto; text-align: center; color: var(--text-light); line-height: 1.8; }
@@ -183,7 +185,7 @@ onUnmounted(() => {
   .company-facts { grid-template-columns: 1fr 1fr; }
   .cert-grid { grid-template-columns: repeat(3, 1fr); }
 }
-@media (max-width: 767px) {
+@media (max-width: 679px) {
   .page-title { font-size: 1.5rem; }
   .cert-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .timeline { padding-left: 24px; }

@@ -146,24 +146,25 @@ onMounted(() => {
 <style scoped>
 .breadcrumb { padding: 20px 0 12px; font-size: 0.85rem; color: var(--text-light); }
 .breadcrumb a { color: var(--text-light); }
-.detail-title { font-size: 1.8rem; margin-bottom: 12px; line-height: 1.4; }
+.breadcrumb a:hover { color: var(--primary); }
+.detail-title { font-size: 1.8rem; margin-bottom: 12px; line-height: 1.4; color: var(--text); }
 .detail-meta { display: flex; gap: 14px; align-items: center; font-size: 0.85rem; margin-bottom: 24px; padding-bottom: 16px; border-bottom: 1px solid var(--border); flex-wrap: wrap; }
-.cat-tag { background: var(--bg-gray); color: var(--primary); padding: 2px 10px; border-radius: 4px; }
-.like-btn { background: none; border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; cursor: pointer; font-size: 0.85rem; margin-left: auto; transition: all 0.2s; }
-.like-btn:hover { border-color: var(--accent); background: #fff8e0; }
-.like-btn.liked { border-color: var(--accent); background: #fff3cc; }
+.cat-tag { background: var(--primary-soft); color: var(--primary); padding: 2px 10px; border-radius: 4px; font-weight: 600; }
+.like-btn { background: none; border: 1px solid var(--border); border-radius: 20px; padding: 4px 12px; cursor: pointer; font-size: 0.85rem; margin-left: auto; color: var(--text-light); transition: all 0.2s; }
+.like-btn:hover { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
+.like-btn.liked { border-color: var(--primary); color: var(--primary); background: var(--primary-soft); }
 .detail-cover { margin-bottom: 20px; }
-.detail-cover img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; }
+.detail-cover img { width: 100%; max-height: 400px; object-fit: cover; border-radius: 8px; border: 1px solid var(--border); }
 .detail-content { line-height: 1.9; font-size: 1rem; color: var(--text); }
 .detail-content :deep(p) { margin-bottom: 16px; }
-.related-title { margin: 24px 0 16px; font-size: 1.2rem; }
+.related-title { margin: 24px 0 16px; font-size: 1.2rem; color: var(--text); }
 .related-list { display: flex; flex-direction: column; gap: 10px; }
-.related-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-gray); border-radius: 6px; color: var(--text); font-size: 0.95rem; }
-.related-item:hover { color: var(--primary); }
+.related-item { display: flex; align-items: center; gap: 12px; padding: 12px 16px; background: var(--bg-section); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 0.95rem; transition: border-color 0.2s; }
+.related-item:hover { color: var(--primary); border-color: var(--primary); }
 .related-cat { background: var(--primary); color: #fff; padding: 2px 8px; border-radius: 4px; font-size: 0.75rem; white-space: nowrap; }
 .related-title-text { flex: 1; }
 
-@media (max-width: 767px) {
+@media (max-width: 679px) {
   .detail-title { font-size: 1.4rem; }
   .detail-meta { gap: 8px; }
   .like-btn { margin-left: 0; }

@@ -27,7 +27,7 @@
           </div>
           <div class="info-item">
             <span class="info-label">地址</span>
-            <span>{{ config.office_address || '山东青岛' }}</span>
+            <span>{{ config.office_address || '辽宁沈阳' }}</span>
           </div>
           <div class="info-note">
             <p>✓ 免费获取方案设计与报价</p>
@@ -134,28 +134,32 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.page-title { text-align: center; font-size: 2rem; margin: 32px 0 8px; }
+.page-title { text-align: center; font-size: 2rem; margin: 32px 0 8px; color: var(--text); }
 .breadcrumb { padding: 16px 0 8px; font-size: 0.85rem; color: var(--text-light); }
 .breadcrumb a { color: var(--text-light); }
+.breadcrumb a:hover { color: var(--primary); }
 .page-sub { margin-bottom: 32px; }
 .contact-wrap { display: grid; grid-template-columns: 1fr; gap: 24px; max-width: 900px; margin: 0 auto; }
-.contact-info h3 { margin-bottom: 16px; color: var(--primary); }
+.contact-info h3 { margin-bottom: 16px; color: #fff; }
 .info-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
 .info-label { color: var(--text-light); width: 48px; flex-shrink: 0; }
-.info-note { margin-top: 20px; color: var(--accent); font-size: 0.9rem; }
+.info-note { margin-top: 20px; color: var(--primary); font-size: 0.9rem; }
 .info-note p { margin-bottom: 6px; }
 
 .form-group { margin-bottom: 16px; }
-.form-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; font-weight: 500; }
-.req { color: #e74c3c; }
+.form-group label { display: block; margin-bottom: 6px; font-size: 0.9rem; font-weight: 500; color: var(--text); }
+.req { color: var(--primary); }
 .form-group input, .form-group textarea {
   width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 6px;
   font-size: 0.95rem; font-family: inherit;
+  background: var(--bg-input); color: var(--text);
+  transition: border-color 0.2s;
 }
-.form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
+.form-group input::placeholder, .form-group textarea::placeholder { color: #6b7280; }
+.form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
 .submit-btn { width: 100%; margin-top: 8px; }
-.success-msg { color: #27ae60; margin-top: 12px; text-align: center; }
-.error-msg { color: #e74c3c; margin-top: 12px; text-align: center; }
+.success-msg { color: var(--success); margin-top: 12px; text-align: center; }
+.error-msg { color: var(--danger); margin-top: 12px; text-align: center; }
 
 @media (min-width: 768px) {
   .contact-wrap { grid-template-columns: 1fr 1.5fr; }
